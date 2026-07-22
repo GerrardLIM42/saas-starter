@@ -1,6 +1,7 @@
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { NameForm, PasswordForm } from "./settings-form";
+import { ExtensionTokenSection } from "./extension-token";
 
 export default async function SettingsPage() {
   const session = await auth();
@@ -33,6 +34,11 @@ export default async function SettingsPage() {
           <PasswordForm />
         </div>
       )}
+
+      <div className="rounded-xl border border-gray-200 bg-white p-5">
+        <p className="text-sm font-medium text-[#071a35] mb-3">확장 프로그램 연결</p>
+        <ExtensionTokenSection />
+      </div>
     </div>
   );
 }

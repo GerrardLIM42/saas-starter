@@ -26,6 +26,10 @@ model User {
   // 이 값은 트랜잭션 내에서 ledger 기록과 함께 갱신한다.
   creditBalance Int @default(0)
 
+  // MORIVA 쿠팡 리뷰 분석기(크롬 확장 프로그램) 연동용 토큰.
+  // 확장 프로그램이 이 토큰으로 /api/extension/verify를 호출해 구독/크레딧 상태를 확인한다.
+  extensionToken String? @unique
+
   accounts      Account[]
   sessions      Session[]
   subscriptions Subscription[]
