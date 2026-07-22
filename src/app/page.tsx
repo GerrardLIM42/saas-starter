@@ -53,7 +53,9 @@ export default function Home() {
       <nav className="sticky top-0 z-20 w-full flex justify-center border-b border-white/10 bg-[#071a35]/90 backdrop-blur">
         <div className="w-full max-w-5xl flex items-center justify-between px-4 py-4">
           <Link href="/" className="flex items-center gap-2">
-            <Image src="/moriva-favicon.png" alt="MORIVA" width={30} height={30} className="rounded-md" />
+            <span className="flex items-center justify-center rounded-md bg-white p-1">
+              <Image src="/moriva-favicon.png" alt="MORIVA" width={24} height={24} />
+            </span>
             <span className="font-bold tracking-wide text-lg">{SERVICE_NAME}</span>
           </Link>
           <div className="hidden sm:flex items-center gap-6 text-sm text-white/70">
@@ -175,7 +177,9 @@ export default function Home() {
 
       <footer className="w-full flex flex-col items-center gap-2 border-t border-white/10 px-4 py-10 text-sm text-white/40 text-center">
         <div className="flex items-center gap-2">
-          <Image src="/moriva-favicon.png" alt="MORIVA" width={20} height={20} className="rounded" />
+          <span className="flex items-center justify-center rounded bg-white p-1">
+            <Image src="/moriva-favicon.png" alt="MORIVA" width={16} height={16} />
+          </span>
           <span className="font-semibold text-white/70">{SERVICE_NAME}</span>
         </div>
         <p className="text-xs text-white/30">Better Life, Better Move</p>

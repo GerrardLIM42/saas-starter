@@ -24,7 +24,9 @@ export default async function AppLayout({ children }: { children: React.ReactNod
       <aside className="hidden sm:flex w-60 flex-shrink-0 flex-col justify-between bg-[#071a35] text-white sticky top-0 h-screen">
         <div className="flex flex-col gap-6 pt-6">
           <Link href="/dashboard" className="flex items-center gap-2 px-4">
-            <Image src="/moriva-favicon.png" alt="MORIVA" width={28} height={28} className="rounded-md" />
+            <span className="flex items-center justify-center rounded-md bg-white p-1">
+              <Image src="/moriva-favicon.png" alt="MORIVA" width={22} height={22} />
+            </span>
             <span className="font-bold tracking-wide">MORIVA</span>
           </Link>
           <SidebarNav />
@@ -53,7 +55,9 @@ export default async function AppLayout({ children }: { children: React.ReactNod
       {/* Mobile top bar (sidebar hidden below sm) */}
       <div className="sm:hidden fixed top-0 inset-x-0 z-30 flex items-center justify-between bg-[#071a35] text-white px-4 py-3">
         <Link href="/dashboard" className="flex items-center gap-2">
-          <Image src="/moriva-favicon.png" alt="MORIVA" width={22} height={22} className="rounded" />
+          <span className="flex items-center justify-center rounded bg-white p-0.5">
+            <Image src="/moriva-favicon.png" alt="MORIVA" width={18} height={18} />
+          </span>
           <span className="font-bold text-sm">MORIVA</span>
         </Link>
         <span className="text-xs text-[#c9961a]">크레딧 {user.creditBalance}</span>
