@@ -1,11 +1,12 @@
 import { auth } from "@/auth";
 import { NextResponse } from "next/server";
 
-// /dashboard, /studio 이하 경로는 로그인 필수. 그 외 경로는 통과.
+const PROTECTED_PREFIXES = ["/dashboard", "/studio", "/credits", "/billing", "/settings"];
+
+// 로그인한 사용자만 접근 가능한 영역(사이드바 앱 셸 하위 전체). 그 외 경로는 통과.
 export default auth((req) => {
   const isLoggedIn = !!req.auth;
-  const isProtected =
-    req.nextUrl.pathname.startsWith("/dashboard") || req.nextUrl.pathname.startsWith("/studio");
+  const isProtected = PROTECTED_PREFIXES.some((p) => req.nextUrl.pathname.startsWith(p));
 
   if (isProtected && !isLoggedIn) {
     const signInUrl = new URL("/signin", req.nextUrl.origin);
@@ -15,5 +16,5 @@ export default auth((req) => {
 });
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/studio/:path*"],
+  matcher: ["/dashboard/:path*", "/studio/:path*", "/credits/:path*", "/billing/:path*", "/settings/:path*"],
 };

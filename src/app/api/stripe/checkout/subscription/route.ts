@@ -44,8 +44,8 @@ export async function POST(req: Request) {
     mode: "subscription",
     customer_email: session.user.email ?? undefined,
     line_items: [{ price: priceId, quantity: 1 }],
-    success_url: `${origin}/dashboard?checkout=success`,
-    cancel_url: `${origin}/dashboard?checkout=cancelled`,
+    success_url: `${origin}/billing?checkout=success`,
+    cancel_url: `${origin}/billing?checkout=cancelled`,
     // metadata는 checkout.session.completed에서, subscription_data.metadata는
     // customer.subscription.* 이벤트에서 각각 참조하기 위해 둘 다 채워둔다.
     metadata: {

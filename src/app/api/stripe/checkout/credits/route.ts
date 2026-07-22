@@ -33,8 +33,8 @@ export async function POST(req: Request) {
     mode: "payment",
     customer_email: session.user.email ?? undefined,
     line_items: [{ price: pack.priceId, quantity: 1 }],
-    success_url: `${origin}/dashboard?checkout=success`,
-    cancel_url: `${origin}/dashboard?checkout=cancelled`,
+    success_url: `${origin}/billing?checkout=success`,
+    cancel_url: `${origin}/billing?checkout=cancelled`,
     metadata: {
       userId: session.user.id,
       creditAmount: String(pack.credits),

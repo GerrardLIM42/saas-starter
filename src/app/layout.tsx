@@ -14,8 +14,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "SaaS Starter",
-  description: "구독 + 크레딧 기반 SaaS 스타터",
+  title: "MORIVA — AI 쿠팡 콘텐츠 스튜디오",
+  description: "제품 사진으로 쿠팡 썸네일·상세페이지 카피를 자동 생성하는 AI 콘텐츠 스튜디오",
+  icons: { icon: "/moriva-favicon.png" },
 };
 
 export default function RootLayout({

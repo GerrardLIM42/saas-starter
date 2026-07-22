@@ -26,8 +26,8 @@ export function BillingActions({ hasSubscription }: { hasSubscription: boolean }
   }
 
   return (
-    <div className="w-full max-w-lg flex flex-col gap-3 border border-gray-200 rounded-xl p-4">
-      <p className="text-sm font-medium">구독 / 크레딧 구매 (Stripe 테스트 모드)</p>
+    <div className="w-full flex flex-col gap-3 border border-gray-200 rounded-xl bg-white p-5">
+      <p className="text-sm font-medium text-[#071a35]">구독 / 크레딧 구매 (Stripe 테스트 모드)</p>
       <div className="flex flex-wrap gap-2">
         <button
           disabled={loading !== null}
@@ -37,7 +37,7 @@ export function BillingActions({ hasSubscription }: { hasSubscription: boolean }
               interval: "monthly",
             })
           }
-          className="rounded-md border border-gray-300 px-3 py-1.5 text-sm disabled:opacity-50"
+          className="rounded-md border border-gray-300 px-3 py-1.5 text-sm disabled:opacity-50 hover:border-[#c9961a]/60 transition"
         >
           {loading === "pro-monthly" ? "이동 중..." : "Pro 월간 구독"}
         </button>
@@ -49,7 +49,7 @@ export function BillingActions({ hasSubscription }: { hasSubscription: boolean }
               interval: "yearly",
             })
           }
-          className="rounded-md border border-gray-300 px-3 py-1.5 text-sm disabled:opacity-50"
+          className="rounded-md border border-gray-300 px-3 py-1.5 text-sm disabled:opacity-50 hover:border-[#c9961a]/60 transition"
         >
           {loading === "pro-yearly" ? "이동 중..." : "Pro 연간 구독"}
         </button>
@@ -60,7 +60,7 @@ export function BillingActions({ hasSubscription }: { hasSubscription: boolean }
               packKey: "credits_1000",
             })
           }
-          className="rounded-md bg-black text-white px-3 py-1.5 text-sm disabled:opacity-50"
+          className="rounded-md bg-[#071a35] text-white px-3 py-1.5 text-sm disabled:opacity-50 hover:bg-[#0d345e] transition"
         >
           {loading === "credits" ? "이동 중..." : "크레딧 1,000개 구매"}
         </button>
@@ -68,7 +68,7 @@ export function BillingActions({ hasSubscription }: { hasSubscription: boolean }
           <button
             disabled={loading !== null}
             onClick={() => handle("portal", "/api/stripe/portal", {})}
-            className="rounded-md border border-gray-300 px-3 py-1.5 text-sm disabled:opacity-50"
+            className="rounded-md border border-gray-300 px-3 py-1.5 text-sm disabled:opacity-50 hover:border-[#c9961a]/60 transition"
           >
             {loading === "portal" ? "이동 중..." : "구독 관리"}
           </button>
