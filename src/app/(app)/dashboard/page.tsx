@@ -11,6 +11,12 @@ const QUICK_LINKS = [
     icon: "🎨",
   },
   {
+    href: "/tools",
+    title: "도구 모음",
+    desc: "상품명 생성기, 가격 세팅, 상세페이지 미리보기, KC 표시사항 내비게이터",
+    icon: "🧰",
+  },
+  {
     href: "/credits",
     title: "크레딧 내역",
     desc: "충전/사용 내역을 확인하세요",
