@@ -43,4 +43,12 @@ export const TOOLS: ToolDef[] = [
     desc: "제품 카테고리에 맞는 KC 인증·표시사항 체크리스트와 라벨 문구를 안내합니다.",
     icon: "📋",
   },
+  {
+    slug: "margin-calculator",
+    file: "margin-calculator.html",
+    navLabel: "마진 계산기",
+    title: "쿠팡 마진 계산기",
+    desc: "중국 직소싱 상품의 수입원가·관부가세·판매비를 반영해 마진율과 적정 판매가를 계산합니다.",
+    icon: "🧮",
+  },
 ];
