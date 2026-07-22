@@ -1,0 +1,150 @@
+// Prisma schema for the SaaS starter
+// - NextAuth 표준 모델 (User, Account, Session, VerificationToken)
+// - 구독 과금 모델 (Plan, Subscription)
+// - 크레딧 원장 모델 (CreditLedger) + User.creditBalance 캐시
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ---------- Auth.js(NextAuth) 표준 모델 ----------
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  password      String? // 이메일/비밀번호 로그인 시 bcrypt 해시 저장 (OAuth만 쓰면 null)
+
+  // 크레딧 잔액 캐시. 실제 원천 데이터는 CreditLedger(append-only)이며,
+  // 이 값은 트랜잭션 내에서 ledger 기록과 함께 갱신한다.
+  creditBalance Int @default(0)
+
+  accounts      Account[]
+  sessions      Session[]
+  subscriptions Subscription[]
+  creditLedger  CreditLedger[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// ---------- 요금제 / 구독 ----------
+
+enum BillingInterval {
+  MONTHLY
+  YEARLY
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  TRIALING
+  PAST_DUE
+  CANCELED
+  INCOMPLETE
+}
+
+// 등급(플랜) 정의. Stripe의 Product/Price와 1:1로 매핑한다.
+model Plan {
+  id                   String  @id @default(cuid())
+  key                  String  @unique // 코드에서 참조할 고정 키, 예: "free" | "pro" | "team"
+  name                 String
+  description          String?
+  monthlyCredits       Int // 구독 갱신 시 매월 지급되는 크레딧
+  stripePriceIdMonthly String? @unique
+  stripePriceIdYearly  String? @unique
+  features             Json? // 등급별 사용 가능 기능/모델 제한 등을 자유롭게 저장
+  isActive             Boolean @default(true)
+
+  subscriptions Subscription[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// 사용자의 구독 상태. Stripe webhook으로만 갱신한다(클라이언트 신뢰 금지).
+model Subscription {
+  id                   String             @id @default(cuid())
+  userId               String
+  planId               String
+  interval             BillingInterval
+  status               SubscriptionStatus
+  stripeCustomerId     String
+  stripeSubscriptionId String             @unique
+  currentPeriodEnd     DateTime
+  cancelAtPeriodEnd    Boolean            @default(false)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  plan Plan @relation(fields: [planId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+}
+
+// ---------- 크레딧 원장 ----------
+
+enum CreditReason {
+  SUBSCRIPTION_GRANT // 구독 갱신 시 자동 지급
+  PURCHASE // 크레딧 추가 구매
+  USAGE // OpenAI 호출 등으로 인한 차감
+  ADJUSTMENT // 운영자 수동 조정
+  REFUND // 환불/롤백
+}
+
+// append-only 원장. 잔액은 절대 직접 수정하지 않고 항상 이 테이블에 행을 추가한 뒤
+// User.creditBalance를 같은 트랜잭션에서 갱신한다. (감사/디버깅 용이)
+model CreditLedger {
+  id        String       @id @default(cuid())
+  userId    String
+  delta     Int // 양수: 지급, 음수: 차감
+  reason    CreditReason
+  metadata  Json? // 예: { model: "gpt-4o", tokens: 1234, requestId: "..." }
+  createdAt DateTime     @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+}
