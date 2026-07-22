@@ -51,4 +51,12 @@ export const TOOLS: ToolDef[] = [
     desc: "중국 직소싱 상품의 수입원가·관부가세·판매비를 반영해 마진율과 적정 판매가를 계산합니다.",
     icon: "🧮",
   },
+  {
+    slug: "sourcing-manifest",
+    file: "sourcing-manifest.html",
+    navLabel: "소싱 매니페스트",
+    title: "소싱 매니페스트 — 1688 → 쿠팡그로스",
+    desc: "1688 사입 후보를 링크·이미지와 함께 등록해 카테고리별 수수료·묶음상품·폴더 단위로 비교 검토합니다.",
+    icon: "🗂️",
+  },
 ];

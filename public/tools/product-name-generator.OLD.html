@@ -70,23 +70,6 @@
   .keyhelp{margin-top:8px;font-size:12px;color:var(--gray);line-height:1.6}
   .keyhelp a{color:var(--navy);font-weight:700;text-decoration:none}
 
-  /* 자동완성 검색어 */
-  .autobox{margin-top:16px;border:1px solid var(--line);border-radius:12px;background:#FBFCFE;padding:16px}
-  .autobox .title{font-weight:800;font-size:13px;margin-bottom:12px;display:flex;align-items:center;gap:8px}
-  .autobox .title .dot{width:8px;height:8px;border-radius:50%;background:var(--navy);display:inline-block}
-  .autogrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-  @media(max-width:680px){.autogrid{grid-template-columns:1fr}}
-  .field textarea{
-    width:100%;padding:11px 12px;border-radius:8px;border:1px solid var(--line);
-    font-size:14px;outline:none;font-family:inherit;background:#fff;resize:vertical;min-height:104px;line-height:1.6;
-  }
-  .field textarea:focus{border-color:var(--navy)}
-  .drop.mini{padding:20px 12px;min-height:104px;display:flex;flex-direction:column;justify-content:center}
-  .drop.mini.has{padding:10px}
-  .drop.mini .t1{font-size:14px}
-  .drop.mini .t2{font-size:12px;margin-top:4px}
-  .drop.mini .thumb img{height:74px}
-
   .go{margin-top:18px;width:100%;padding:15px 0;border-radius:10px;border:none;background:var(--navy);color:#fff;font-size:16px;font-weight:800;cursor:pointer;font-family:inherit;letter-spacing:-.01em;transition:background .15s}
   .go:hover:not(:disabled){background:var(--navy-deep)}
   .go:disabled{background:var(--gray);cursor:default}
@@ -113,7 +96,6 @@
   .chip{font-size:13px;font-weight:600;padding:5px 10px;border-radius:6px}
   .chip.t{background:var(--gold-soft);color:#8A6210;border:1px solid var(--gold)}
   .chip.s{background:var(--navy-soft);color:var(--navy)}
-  .chip.a{background:var(--navy);color:#fff}
   .chip.q{background:#fff;color:#8A6210;border:1px dashed var(--gold);font-weight:700}
   .chip.x{background:#F1F2F6;color:var(--gray);text-decoration:line-through}
 
@@ -168,24 +150,6 @@
         </div>
       </div>
       <div class="thumbs" id="thumbs" style="display:none"></div>
-    </div>
-
-    <div class="autobox">
-      <div class="title"><span class="dot"></span>자동완성·연관 검색어 <em style="font-weight:400;color:var(--gray);font-style:normal">(선택 — 넣으면 소비자 실검색어로 최우선 반영)</em></div>
-      <div class="autogrid">
-        <label class="field">
-          <span>텍스트로 붙여넣기 <em class="opt">(한 줄에 하나 또는 쉼표 구분)</em></span>
-          <textarea id="autoText" placeholder="쿠팡 검색창에 메인키워드를 입력하면 뜨는 자동완성어를 복사해 붙여넣으세요&#10;예)&#10;이염방지시트 100매&#10;세탁 이염방지 시트&#10;이염방지 티슈"></textarea>
-        </label>
-        <div class="drop mini" id="autoDrop">
-          <input type="file" id="autoFile" accept="image/*" multiple hidden>
-          <div id="autoEmpty">
-            <div class="t1">🔍 자동완성 캡처 업로드</div>
-            <div class="t2">자동완성/연관검색어 화면 캡처 (최대 2장)<br>클릭 · 드래그 · 이 칸 클릭 후 <kbd>Ctrl</kbd>+<kbd>V</kbd></div>
-          </div>
-          <div class="thumbs" id="autoThumbs" style="display:none"></div>
-        </div>
-      </div>
     </div>
 
     <div class="fields">
@@ -253,10 +217,7 @@
 
 <script>
 const $ = (id) => document.getElementById(id);
-let images = [];      // 검색결과 스크린샷
-let autoImages = [];  // 자동완성/연관검색어 캡처
-let sendImages = [];  // 전송용 (검색결과 + 자동완성)
-let pasteTarget = "main"; // Ctrl+V 대상: main | auto
+let images = [];
 
 // ── AI 서비스별 설정 ──
 const PROVIDERS = {
@@ -366,7 +327,7 @@ function renderThumbs(){
     };
   });
 }
-$("drop").addEventListener("click", () => { pasteTarget = "main"; $("file").click(); });
+$("drop").addEventListener("click", () => $("file").click());
 $("file").addEventListener("change", (e) => { addFiles(e.target.files); e.target.value = ""; });
 ["dragover","dragenter"].forEach(ev => $("drop").addEventListener(ev, e => {
   e.preventDefault(); $("drop").classList.add("dragover");
@@ -374,60 +335,7 @@ $("file").addEventListener("change", (e) => { addFiles(e.target.files); e.target
 ["dragleave","drop"].forEach(ev => $("drop").addEventListener(ev, e => {
   e.preventDefault(); $("drop").classList.remove("dragover");
 }));
-$("drop").addEventListener("drop", e => { pasteTarget = "main"; addFiles(e.dataTransfer.files); });
-
-// ── 자동완성 캡처 등록 ──
-function addAutoFiles(fileList){
-  hideMsg();
-  const files = Array.from(fileList).filter(f => f.type && f.type.startsWith("image/"));
-  if(!files.length){ showErr("이미지 파일(PNG/JPG)만 첨부할 수 있습니다."); return; }
-  files.slice(0, 2).forEach(file => {
-    const r = new FileReader();
-    r.onload = () => {
-      if(autoImages.length >= 2) return;
-      autoImages.push({
-        data: r.result.split(",")[1],
-        mediaType: file.type || "image/png",
-        preview: r.result
-      });
-      renderAutoThumbs();
-    };
-    r.readAsDataURL(file);
-  });
-}
-function renderAutoThumbs(){
-  const t = $("autoThumbs"), e = $("autoEmpty"), d = $("autoDrop");
-  if(!autoImages.length){
-    t.style.display = "none"; e.style.display = "block"; d.classList.remove("has");
-    return;
-  }
-  d.classList.add("has"); e.style.display = "none"; t.style.display = "flex";
-  t.innerHTML = autoImages.map((img, i) => `
-    <div class="thumb">
-      <img src="${img.preview}" alt="자동완성 캡처 ${i+1}">
-      <button class="del" data-i="${i}" aria-label="이미지 삭제">✕</button>
-    </div>`).join("") + `<div class="add-more">+ 추가</div>`;
-  t.querySelectorAll(".del").forEach(btn => {
-    btn.onclick = (ev) => {
-      ev.stopPropagation();
-      autoImages.splice(Number(btn.dataset.i), 1);
-      renderAutoThumbs();
-    };
-  });
-}
-$("autoDrop").addEventListener("click", () => { pasteTarget = "auto"; $("autoFile").click(); });
-$("autoFile").addEventListener("change", (e) => { addAutoFiles(e.target.files); e.target.value = ""; });
-["dragover","dragenter"].forEach(ev => $("autoDrop").addEventListener(ev, e => {
-  e.preventDefault(); e.stopPropagation(); $("autoDrop").classList.add("dragover");
-}));
-["dragleave","drop"].forEach(ev => $("autoDrop").addEventListener(ev, e => {
-  e.preventDefault(); e.stopPropagation(); $("autoDrop").classList.remove("dragover");
-}));
-$("autoDrop").addEventListener("drop", e => { pasteTarget = "auto"; addAutoFiles(e.dataTransfer.files); });
-$("autoText").addEventListener("focus", () => { pasteTarget = "auto"; });
-$("brand").addEventListener("focus", () => { pasteTarget = "main"; });
-
-// ── 클립보드 붙여넣기: 마지막으로 클릭/포커스한 영역으로 라우팅 ──
+$("drop").addEventListener("drop", e => addFiles(e.dataTransfer.files));
 document.addEventListener("paste", (e) => {
   const items = e.clipboardData && e.clipboardData.items;
   if(!items) return;
@@ -438,11 +346,7 @@ document.addEventListener("paste", (e) => {
       if(f) files.push(f);
     }
   }
-  if(files.length){
-    e.preventDefault();
-    if(pasteTarget === "auto") addAutoFiles(files);
-    else addFiles(files);
-  }
+  if(files.length){ e.preventDefault(); addFiles(files); }
 });
 
 // ── 메시지 ──
@@ -505,7 +409,7 @@ async function callAI(provider, key, model, prompt){
         body: JSON.stringify({
           contents: [{
             parts: [
-              ...sendImages.map(img => ({ inline_data: { mime_type: img.mediaType, data: img.data } })),
+              ...images.map(img => ({ inline_data: { mime_type: img.mediaType, data: img.data } })),
               { text: prompt }
             ]
           }],
@@ -553,7 +457,7 @@ async function callAI(provider, key, model, prompt){
           role: "user",
           content: [
             { type: "text", text: prompt },
-            ...sendImages.map(img => ({
+            ...images.map(img => ({
               type: "image_url",
               image_url: { url: "data:" + img.mediaType + ";base64," + img.data }
             }))
@@ -584,7 +488,7 @@ async function callAI(provider, key, model, prompt){
       messages: [{
         role: "user",
         content: [
-          ...sendImages.map(img => ({
+          ...images.map(img => ({
             type: "image",
             source: { type: "base64", media_type: img.mediaType, data: img.data }
           })),
@@ -620,27 +524,10 @@ async function analyze(){
   const brandName = $("brand").value.trim() || "모리바";
   const hint = $("hint").value.trim();
 
-  // 자동완성 검색어 정리 (줄바꿈/쉼표 구분)
-  const autoTerms = $("autoText").value
-    .split(/[\n,]+/)
-    .map(s => s.trim())
-    .filter(Boolean)
-    .slice(0, 20);
-
-  // 전송 이미지: 검색결과 스크린샷 먼저, 자동완성 캡처 나중
-  sendImages = [...images, ...autoImages];
-
-  const autoBlock = (autoTerms.length || autoImages.length) ? `
-[자동완성·연관 검색어 — 소비자 실검색어 확정 근거]
-${autoTerms.length ? "- 사용자가 붙여넣은 자동완성어 목록:\n" + autoTerms.map(t => "  · " + t).join("\n") : ""}
-${autoImages.length ? "- 첨부 이미지 중 마지막 " + autoImages.length + "장은 쿠팡 자동완성/연관검색어 캡처다. 여기서 검색어를 읽어 목록에 합쳐라." : ""}
-- 여기 등장하는 키워드는 소비자가 실제 검색창에 입력한 것이 확정된 표현이므로, 타겟/서브 분류와 상품명 조합에서 최우선 순위로 채택한다. (우선순위: 자동완성 ≥ 번호 상품 > 번호 없는 상품)
-` : "";
-
   const prompt = `당신은 쿠팡 로켓그로스 상품명 컨설턴트입니다.
-${autoBlock}
+
 [분석 — 우선순위 2단계]
-1. [우선순위] 검색결과 스크린샷에서 번호(1,2,3,4 등)가 표기된 상위노출 상품명을 모두 추출한다. 최대 8개. (자동완성 캡처 이미지는 상품 추출 대상이 아님)
+1. [우선순위] 스크린샷에서 번호(1,2,3,4 등)가 표기된 상위노출 상품명을 모두 추출한다. 최대 8개.
 2. [후순위] 번호가 없는 나머지 판매자의 상품명도 노출 순서대로 추출한다. 최대 6개.
 3. 키워드 빈도를 셀 때 [우선순위] 상품에 등장한 키워드는 2배 가중치로 계산하고, [후순위] 상품에만 등장한 키워드는 보조 근거로만 사용한다.
 4. 키워드 분류:
@@ -662,9 +549,9 @@ ${hint ? "- 참고: " + hint : ""}
 [출력 — 매우 중요]
 줄바꿈·공백·마크다운·코드블록 없이 아래 한 줄 JSON만 출력. 다른 텍스트 절대 금지.
 키는 반드시 이 축약형을 사용:
-{"ex":[{"r":1,"n":"상품명원문"}],"kw":{"t":["키워드×빈도"],"s":["키워드×빈도"],"a":["자동완성반영키워드"],"q":["수량표현×빈도"],"x":["제외표현"]},"rec":[{"n":"${brandName} 단어2 단어3 단어4 단어5","ro":"B,S,T,S,S","w":"추천이유(25자이내)"}]}
+{"ex":[{"r":1,"n":"상품명원문"}],"kw":{"t":["키워드×빈도"],"s":["키워드×빈도"],"q":["수량표현×빈도"],"x":["제외표현"]},"rec":[{"n":"${brandName} 단어2 단어3 단어4 단어5","ro":"B,S,T,S,S","w":"추천이유(25자이내)"}]}
 - ex: 번호 있는 상품은 r에 그 번호, 번호 없는 상품은 r:0. 번호 있는 상품을 먼저 나열. n은 원문 그대로(길면 60자에서 자름).
-- kw.t 최대 4개, kw.s 최대 8개, kw.a는 자동완성·연관검색어에서 확인되어 추천에 반영한 키워드 최대 6개(자동완성 입력이 없으면 빈 배열), kw.q 최대 6개(상위 판매자들이 쓴 수량·구성 표현 통계), kw.x 최대 4개. 빈도는 가중치 반영 후 값.
+- kw.t 최대 4개, kw.s 최대 8개, kw.q 최대 6개(상위 판매자들이 쓴 수량·구성 표현 통계), kw.x 최대 4개. 빈도는 가중치 반영 후 값.
 - rec: 정확히 5개. ro는 n의 5단어 각각의 역할을 B(브랜드)/T(타겟)/S(서브)로 순서대로 표기.`;
 
   try{
@@ -727,7 +614,6 @@ function render(parsed, recs){
   $("kwCard").innerHTML =
     rowHtml("타겟키워드", kw.t, "t") +
     rowHtml("서브키워드", kw.s, "s") +
-    rowHtml("🔍 자동완성·연관검색어 반영 (소비자 실검색어)", kw.a, "a") +
     rowHtml("📷 썸네일 표기 요소 (수량·구성) — 상품명에서 제외됨", kw.q, "q") +
     rowHtml("제외(어필표현)", kw.x, "x");
   $("sec2").classList.add("show");
