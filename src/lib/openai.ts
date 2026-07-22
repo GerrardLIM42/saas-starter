@@ -1,7 +1,10 @@
 import OpenAI from "openai";
 
+// OPENAI_API_KEY가 아직 설정되지 않았어도 빌드/다른 페이지가 전부 죽지 않도록
+// 더미 값으로 폴백한다. 실제 채팅 라우트를 호출할 때만 OpenAI가 인증 오류를
+// 반환하며, 그 경우는 해당 API 라우트 자체에서 처리된다.
 export const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
+  apiKey: process.env.OPENAI_API_KEY || "sk-not-configured",
 });
 
 // 모델별 "1,000 토큰당 크레딧" 환산 비율. OpenAI 원가 + 마진을 고려해 직접 책정한다.
