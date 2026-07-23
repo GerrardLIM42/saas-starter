@@ -55,9 +55,17 @@ export function SidebarNav() {
         <NavLink key={item.href} {...item} />
       ))}
 
-      <p className="mt-4 mb-1 px-3 text-[10px] font-semibold tracking-wider text-white/30">
-        도구
-      </p>
+      <Link
+        href="/tools"
+        className="mt-4 mb-1 px-3 flex items-center justify-between group"
+      >
+        <span className="text-[10px] font-semibold tracking-wider text-white/30 group-hover:text-white/50">
+          도구
+        </span>
+        <span className="text-[9px] text-white/20 group-hover:text-[#c9961a] transition">
+          순서 변경 ↗
+        </span>
+      </Link>
       {tools.map((tool) => (
         <NavLink key={tool.slug} href={`/tools/${tool.slug}`} label={tool.navLabel} icon={tool.icon} />
       ))}
