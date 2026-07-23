@@ -1,0 +1,26 @@
+{
+  "name": "MORIVA — AI 쿠팡 콘텐츠 스튜디오 (데모)",
+  "short_name": "MORIVA 데모",
+  "description": "쿠팡 셀러를 위한 AI 콘텐츠 스튜디오 데모 버전입니다. 화면 구성을 둘러볼 수 있으며 저장·결제·AI 기능은 실제로 동작하지 않습니다.",
+  "start_url": "/demo",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#071a35",
+  "theme_color": "#071a35",
+  "lang": "ko",
+  "icons": [
+    {
+      "src": "/moriva-favicon.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/moriva-favicon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

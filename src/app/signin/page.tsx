@@ -69,6 +69,19 @@ function SignInForm() {
       <p className="text-sm text-gray-500">
         계정이 없으신가요? <Link href="/signup" className="underline">회원가입</Link>
       </p>
+
+      <div className="flex items-center gap-3 text-xs text-gray-400">
+        <span className="flex-1 h-px bg-gray-200" />
+        또는
+        <span className="flex-1 h-px bg-gray-200" />
+      </div>
+
+      <a
+        href="/demo"
+        className="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-center hover:border-[#c9961a]/60 hover:text-[#c9961a] transition"
+      >
+        로그인 없이 데모로 둘러보기
+      </a>
     </form>
   );
 }
