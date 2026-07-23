@@ -13,13 +13,13 @@
   <script src="https://unpkg.com/@babel/standalone@7.24.7/babel.min.js"></script>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    html, body { background: #F6F3EC; overflow-x: hidden; }
+    html, body { background: #F7F4EC; overflow-x: hidden; }
     #root { min-height: 100vh; }
     select { -webkit-appearance: none; }
     button { font-family: 'Noto Sans KR', sans-serif; }
     ::-webkit-scrollbar { width: 4px; }
-    ::-webkit-scrollbar-track { background: #EDE7D8; }
-    ::-webkit-scrollbar-thumb { background: #DCD5C3; border-radius: 2px; }
+    ::-webkit-scrollbar-track { background: #EFEAE0; }
+    ::-webkit-scrollbar-thumb { background: #E5DFCF; border-radius: 2px; }
   </style>
 </head>
 <body>
@@ -58,12 +58,12 @@
 
     const INPUT_STYLE = {
       width: "100%", padding: "8px 10px", borderRadius: 6, outline: "none",
-      background: "#FFFDF8", border: "1px solid #DCD5C3", color: "#1B2A3D",
+      background: "#FBFAF6", border: "1px solid #E3DDCB", color: "#1E293B",
       fontSize: 14, fontFamily: "JetBrains Mono, monospace",
     };
     const SELECT_STYLE = {
-      width: "100%", padding: "8px 10px", background: "#FFFDF8",
-      border: "1px solid #DCD5C3", borderRadius: 6, color: "#1B2A3D",
+      width: "100%", padding: "8px 10px", background: "#FBFAF6",
+      border: "1px solid #E3DDCB", borderRadius: 6, color: "#1E293B",
       fontSize: 13, marginBottom: 8, cursor: "pointer", outline: "none",
     };
 
@@ -71,7 +71,7 @@
 
     function SL({ text }) {
       return (
-        <div style={{ fontSize: 10, color: "#8B95A1", marginBottom: 4,
+        <div style={{ fontSize: 10, color: "#64748B", marginBottom: 4,
           letterSpacing: "0.07em", textTransform: "uppercase", fontWeight: 700 }}>
           {text}
         </div>
@@ -113,14 +113,14 @@
 
     function Seg({ options, current, onChange }) {
       return (
-        <div style={{ display: "flex", background: "#EDE7D8", borderRadius: 8,
-          padding: 3, border: "1px solid #DCD5C3", marginBottom: 12 }}>
+        <div style={{ display: "flex", background: "#EFEAE0", borderRadius: 8,
+          padding: 3, border: "1px solid #E3DDCB", marginBottom: 12 }}>
           {options.map(o => (
             <button key={o.v} onClick={() => onChange(o.v)}
               style={{ flex: 1, padding: "7px 4px", borderRadius: 6, border: "none",
                 cursor: "pointer", transition: "all .15s",
-                background: current === o.v ? "#C2703D" : "transparent",
-                color: current === o.v ? "#fff" : "#5F6B78",
+                background: current === o.v ? "#EE4D2D" : "transparent",
+                color: current === o.v ? "#fff" : "#475569",
                 fontSize: 12, fontWeight: 700 }}>
               {o.l}
             </button>
@@ -133,10 +133,10 @@
       return (
         <div style={{ display: "flex", alignItems: "center",
           justifyContent: "space-between", marginBottom: 12 }}>
-          <span style={{ fontSize: 13, color: "#8B95A1" }}>{label}</span>
+          <span style={{ fontSize: 13, color: "#94A3B8" }}>{label}</span>
           <button onClick={() => onChange(!value)}
             style={{ width: 44, height: 24, borderRadius: 12, border: "none",
-              cursor: "pointer", background: value ? "#C2703D" : "#DCD5C3",
+              cursor: "pointer", background: value ? "#EE4D2D" : "#E3DDCB",
               position: "relative", transition: "background .2s" }}>
             <span style={{ position: "absolute", top: 3, width: 18, height: 18,
               left: value ? 23 : 3, borderRadius: "50%", background: "#fff",
@@ -150,11 +150,11 @@
     function CostRow({ label, value, accent, bold }) {
       return (
         <div style={{ display: "flex", justifyContent: "space-between",
-          padding: "5px 0", borderBottom: "1px solid #DCD5C3" }}>
-          <span style={{ fontSize: 12, color: bold ? "#1B2A3D" : "#5F6B78",
+          padding: "5px 0", borderBottom: "1px solid #F1ECE0" }}>
+          <span style={{ fontSize: 12, color: bold ? "#1E293B" : "#475569",
             fontWeight: bold ? 700 : 400 }}>{label}</span>
           <span style={{ fontSize: 12, fontFamily: "JetBrains Mono, monospace",
-            color: accent || (bold ? "#8B95A1" : "#5F6B78"),
+            color: accent || (bold ? "#94A3B8" : "#334155"),
             fontWeight: bold ? 700 : 400 }}>
             {fmt(value)}원
           </span>
@@ -165,7 +165,7 @@
     function Card({ children, style: extra = {} }) {
       return (
         <div style={{ background: "#FFFFFF", borderRadius: 12,
-          padding: "16px 18px", border: "1px solid #DCD5C3",
+          padding: "16px 18px", border: "1px solid #E5DFCF",
           boxShadow: "0 1px 3px rgba(20,20,10,0.04)",
           marginBottom: 14, ...extra }}>
           {children}
@@ -175,7 +175,7 @@
 
     function PH({ children }) {
       return (
-        <div style={{ fontSize: 10, color: "#5F6B78", fontWeight: 700,
+        <div style={{ fontSize: 10, color: "#475569", fontWeight: 700,
           textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: 12 }}>
           {children}
         </div>
@@ -186,9 +186,9 @@
       return (
         <div style={{ marginBottom: 14 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8,
-            paddingBottom: 8, marginBottom: 12, borderBottom: "1px solid #DCD5C3" }}>
+            paddingBottom: 8, marginBottom: 12, borderBottom: "1px solid #E5DFCF" }}>
             <span style={{ fontSize: 14 }}>{emoji}</span>
-            <span style={{ fontSize: 10, fontWeight: 700, color: "#5F6B78",
+            <span style={{ fontSize: 10, fontWeight: 700, color: "#334155",
               textTransform: "uppercase", letterSpacing: "0.1em" }}>{title}</span>
           </div>
           {children}
@@ -253,7 +253,7 @@
 
       // ── SAVE / LOAD ──────────────────────────────────────────────────────────
       const MCAT_COLORS = {
-        ACTIVE:"#C2703D", CAMP:"#16A34A", HOME:"#2563EB", PET:"#9333EA", BAG:"#CA8A04"
+        ACTIVE:"#EE4D2D", CAMP:"#16A34A", HOME:"#2563EB", PET:"#9333EA", BAG:"#CA8A04"
       };
 
       // 옵션 헬퍼
@@ -553,7 +553,7 @@
 
       const BARS = [
         { label: "수입원가", color: "#3B82F6", val: C.impTotal    },
-        { label: "수수료",   color: "#C2703D", val: C.commission  },
+        { label: "수수료",   color: "#EE4D2D", val: C.commission  },
         { label: "물류비",   color: "#F59E0B", val: C.logistic    },
         { label: "광고비",   color: "#8B5CF6", val: C.adCost      },
         { label: "반품비",   color: "#EC4899", val: C.retCost     },
@@ -562,14 +562,14 @@
       ];
 
       return (
-        <div style={{ minHeight: "100vh", background: "#F6F3EC",
-          color: "#1B2A3D", fontFamily: "'Noto Sans KR', sans-serif", padding: 20 }}>
+        <div style={{ minHeight: "100vh", background: "#F7F4EC",
+          color: "#1E293B", fontFamily: "'Noto Sans KR', sans-serif", padding: 20 }}>
 
           {/* MORIVA BRAND HEADER */}
           <div style={{ maxWidth: 1080, margin: "0 auto 20px", borderRadius: 14,
-            overflow: "hidden", border: "1px solid #DCD5C3",
+            overflow: "hidden", border: "1px solid #E5DFCF",
             boxShadow: "0 2px 8px rgba(20,20,10,0.06)" }}>
-            <div style={{ background: "#1B2A3D", padding: "20px 36px" }}>
+            <div style={{ background: "#10192B", padding: "20px 36px" }}>
               <div style={{ display: "flex", alignItems: "center", gap: 22, justifyContent: "center" }}>
                 {/* Mountain-M SVG Icon */}
                 <svg width="72" height="60" viewBox="0 0 72 60" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -579,7 +579,7 @@
                     strokeLinejoin="miter" strokeLinecap="round"/>
                   {/* Inner V cut — creates the M notch */}
                   <polyline points="17,56 24,10 36,30 48,10 55,56"
-                    fill="#1B2A3D" stroke="#1B2A3D" strokeWidth="1"/>
+                    fill="#10192B" stroke="#10192B" strokeWidth="1"/>
                   {/* Re-draw clean white strokes over notch */}
                   <line x1="2"  y1="56" x2="24" y2="10" stroke="#FFFFFF" strokeWidth="6.5" strokeLinecap="round"/>
                   <line x1="24" y1="10" x2="36" y2="30" stroke="#FFFFFF" strokeWidth="6.5" strokeLinecap="round"/>
@@ -587,7 +587,7 @@
                   <line x1="48" y1="10" x2="70" y2="56" stroke="#FFFFFF" strokeWidth="6.5" strokeLinecap="round"/>
                   {/* Gold diamond accent at top-center junction */}
                   <polygon points="36,2 41,12 36,22 31,12"
-                    fill="#D98E3D"/>
+                    fill="#C9A227"/>
                 </svg>
                 {/* Divider */}
                 <div style={{ width: 1, height: 52, background: "#2A3A52" }} />
@@ -595,14 +595,14 @@
                 <div>
                   <div style={{ fontSize: 26, fontWeight: 900, color: "#FFFFFF",
                     letterSpacing: "0.12em", lineHeight: 1 }}>MORIVA</div>
-                  <div style={{ fontSize: 13, fontWeight: 500, color: "#D98E3D",
+                  <div style={{ fontSize: 13, fontWeight: 500, color: "#C9A227",
                     letterSpacing: "0.18em", marginTop: 4 }}>모 리 바</div>
                   <div style={{ fontSize: 9.5, color: "#6B7E9B", letterSpacing: "0.22em",
                     marginTop: 5, textTransform: "uppercase" }}>Better Life, Better Move</div>
                 </div>
               </div>
             </div>
-            <div style={{ background: "#FFFDF8", padding: "12px 28px",
+            <div style={{ background: "#FBFAF6", padding: "12px 28px",
               display: "flex", justifyContent: "center", gap: 32, flexWrap: "wrap" }}>
               {[
                 { e: "🏃", k: "ACTIVE", h: "액티브" },
@@ -613,8 +613,8 @@
               ].map((c, i) => (
                 <div key={i} style={{ textAlign: "center" }}>
                   <div style={{ fontSize: 15 }}>{c.e}</div>
-                  <div style={{ fontSize: 10, fontWeight: 700, color: "#1B2A3D", marginTop: 3 }}>{c.k}</div>
-                  <div style={{ fontSize: 9, color: "#8B95A1" }}>{c.h}</div>
+                  <div style={{ fontSize: 10, fontWeight: 700, color: "#1E293B", marginTop: 3 }}>{c.k}</div>
+                  <div style={{ fontSize: 9, color: "#94A3B8" }}>{c.h}</div>
                 </div>
               ))}
             </div>
@@ -625,14 +625,14 @@
             <div style={{ display: "flex", alignItems: "center" }}>
               <div>
                 <div style={{ display: "flex", alignItems: "baseline", gap: 10 }}>
-                  <span style={{ fontSize: 20, fontWeight: 900, color: "#C2703D",
+                  <span style={{ fontSize: 20, fontWeight: 900, color: "#EE4D2D",
                     letterSpacing: "-0.02em" }}>COUPANG</span>
-                  <span style={{ fontSize: 11, fontWeight: 700, color: "#8B95A1",
+                  <span style={{ fontSize: 11, fontWeight: 700, color: "#8C8472",
                     letterSpacing: "0.14em", textTransform: "uppercase" }}>
                     Gross Margin Calculator
                   </span>
                 </div>
-                <div style={{ fontSize: 11, color: "#8B95A1", marginTop: 2 }}>
+                <div style={{ fontSize: 11, color: "#8C8472", marginTop: 2 }}>
                   중국 직소싱 상품 수익성 분석 · 수입원가 + 관부가세 + 판매비 자동 계산
                 </div>
               </div>
@@ -650,7 +650,7 @@
               </div>
             </div>
             <div style={{ height: 1, marginTop: 12,
-              background: "linear-gradient(90deg,#C2703D55,#C2703D18,transparent)" }} />
+              background: "linear-gradient(90deg,#EE4D2D55,#EE4D2D18,transparent)" }} />
           </div>
 
           {/* MAIN GRID */}
@@ -679,27 +679,27 @@
                               e.target.value)}
                             placeholder={opt.inputMode === "margin" ? "마진율 %" : "판매가 ₩"}
                             style={{ ...INPUT_STYLE, marginBottom: 0,
-                              borderColor: "#D98E3D",
+                              borderColor: "#C9A227",
                               fontFamily: "JetBrains Mono, monospace", fontSize: 14,
                               fontWeight: 700 }} />
-                          <div style={{ fontSize: 10, color: "#8B95A1", marginTop: 3, textAlign: "center" }}>
+                          <div style={{ fontSize: 10, color: "#94A3B8", marginTop: 3, textAlign: "center" }}>
                             {opt.inputMode === "margin" ? "목표 마진율 (%)" : "판매가 (₩ KRW)"}
                           </div>
                         </div>
                         <button onClick={() => toggleMode(0, res)}
                           style={{ flexShrink: 0, width: 40, height: 40, borderRadius: "50%",
-                            border: "2px solid #1B2A3D", background: "#1B2A3D",
+                            border: "2px solid #10192B", background: "#10192B",
                             color: "#fff", cursor: "pointer", fontSize: 15,
                             display: "flex", alignItems: "center", justifyContent: "center" }}>
                           ⇄
                         </button>
                         <div style={{ flex: 1, padding: "8px 10px", borderRadius: 8,
-                          background: res.sp > 0 ? (mc(res.marginRate) + "0F") : "#F6F3EC",
-                          border: "1px solid " + (res.sp > 0 ? mc(res.marginRate) + "40" : "#DCD5C3"),
+                          background: res.sp > 0 ? (mc(res.marginRate) + "0F") : "#F7F4EC",
+                          border: "1px solid " + (res.sp > 0 ? mc(res.marginRate) + "40" : "#E5DFCF"),
                           textAlign: "center" }}>
                           {res.sp > 0 ? (
                             <React.Fragment>
-                              <div style={{ fontSize: 9, color: "#8B95A1", marginBottom: 2 }}>
+                              <div style={{ fontSize: 9, color: "#94A3B8", marginBottom: 2 }}>
                                 {opt.inputMode === "margin" ? "적정 판매가" : "마진율"}
                               </div>
                               <div style={{ fontSize: 14, fontWeight: 900,
@@ -710,7 +710,7 @@
                               </div>
                             </React.Fragment>
                           ) : (
-                            <div style={{ fontSize: 10, color: "#DCD5C3" }}>—</div>
+                            <div style={{ fontSize: 10, color: "#CBD5E1" }}>—</div>
                           )}
                         </div>
                       </div>
@@ -759,7 +759,7 @@
                           : <NumIn label="USD → KRW 환율 (오늘 기준)" unit="₩/$" value={xrUsd} onChange={setXrUsd} />
                       ) : (
                         <React.Fragment>
-                          <div style={{ fontSize: 10, color: "#5F6B78", marginBottom: 8 }}>
+                          <div style={{ fontSize: 10, color: "#475569", marginBottom: 8 }}>
                             관부가세·운송비 등 버퍼 포함 추정 — 기본 ₩300, 직접 수정 가능
                           </div>
                           <NumIn label="간편비율" unit={`₩/${cur === "CNY" ? "¥" : "$"}`}
@@ -861,18 +861,18 @@
                       <div key={t.v} onClick={() => setTaxType(t.v)}
                         style={{ display: "flex", alignItems: "center", gap: 10,
                           padding: "9px 12px", borderRadius: 8, cursor: "pointer",
-                          border: "1px solid " + (taxType === t.v ? "#1B2A3D" : "#DCD5C3"),
-                          background: taxType === t.v ? "#1B2A3D" : "#FFFDF8" }}>
+                          border: "1px solid " + (taxType === t.v ? "#10192B" : "#E5DFCF"),
+                          background: taxType === t.v ? "#10192B" : "#FBFAF6" }}>
                         <div style={{ width: 16, height: 16, borderRadius: "50%", flexShrink: 0,
-                          border: "2px solid " + (taxType === t.v ? "#fff" : "#DCD5C3"),
+                          border: "2px solid " + (taxType === t.v ? "#fff" : "#CBD5E1"),
                           background: taxType === t.v ? "#fff" : "transparent",
                           display: "flex", alignItems: "center", justifyContent: "center" }}>
-                          {taxType === t.v && <div style={{ width: 7, height: 7, borderRadius: "50%", background: "#1B2A3D" }} />}
+                          {taxType === t.v && <div style={{ width: 7, height: 7, borderRadius: "50%", background: "#10192B" }} />}
                         </div>
                         <div>
                           <div style={{ fontSize: 13, fontWeight: 700,
-                            color: taxType === t.v ? "#fff" : "#5F6B78" }}>{t.label}</div>
-                          <div style={{ fontSize: 10, color: "#8B95A1", marginTop: 1 }}>{t.desc}</div>
+                            color: taxType === t.v ? "#fff" : "#334155" }}>{t.label}</div>
+                          <div style={{ fontSize: 10, color: "#94A3B8", marginTop: 1 }}>{t.desc}</div>
                         </div>
                       </div>
                     ))}
@@ -883,13 +883,13 @@
                       {taxType === "general" && (
                         <React.Fragment>
                           <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
-                            <span style={{ color: "#5F6B78" }}>매출세액 (SP ÷ 11)</span>
+                            <span style={{ color: "#475569" }}>매출세액 (SP ÷ 11)</span>
                             <span style={{ fontFamily: "JetBrains Mono, monospace", color: "#0369A1" }}>
                               {fmt(Math.round(C.outputVAT))}원
                             </span>
                           </div>
                           <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
-                            <span style={{ color: "#5F6B78" }}>매입세액공제 (수입부가세)</span>
+                            <span style={{ color: "#475569" }}>매입세액공제 (수입부가세)</span>
                             <span style={{ fontFamily: "JetBrains Mono, monospace", color: "#16A34A" }}>
                               -{fmt(Math.round(C.inputVATCredit))}원
                             </span>
@@ -920,9 +920,9 @@
                 <Sec emoji="🎯" title="목표 마진 분석">
                   <NumIn label="목표 마진율" unit="%" value={tm} onChange={setTm} />
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginTop: 4 }}>
-                    <div style={{ background: "#EDE7D8", borderRadius: 8, padding: 12,
+                    <div style={{ background: "#EFEAE0", borderRadius: 8, padding: 12,
                       border: "1px solid " + (C.SP > 0 && C.SP >= C.bepPrice ? "#16A34A28" : "#7F1D1D28") }}>
-                      <div style={{ fontSize: 10, color: "#5F6B78", marginBottom: 6 }}>손익분기가 (BEP)</div>
+                      <div style={{ fontSize: 10, color: "#475569", marginBottom: 6 }}>손익분기가 (BEP)</div>
                       <div style={{ fontSize: 16, fontFamily: "JetBrains Mono, monospace", fontWeight: 700,
                         color: C.SP > 0 && C.SP >= C.bepPrice ? "#4ADE80" : "#F87171" }}>
                         {fmt(C.bepPrice)}원
@@ -932,9 +932,9 @@
                         {C.SP > 0 && C.SP >= C.bepPrice ? "✅ 달성" : `❌ ${fmt(C.bepPrice - C.SP)}원 부족`}
                       </div>
                     </div>
-                    <div style={{ background: "#EDE7D8", borderRadius: 8, padding: 12,
+                    <div style={{ background: "#EFEAE0", borderRadius: 8, padding: 12,
                       border: "1px solid " + (C.SP > 0 && C.SP >= C.minPrice ? "#1D4ED828" : "#78350F28") }}>
-                      <div style={{ fontSize: 10, color: "#5F6B78", marginBottom: 6 }}>
+                      <div style={{ fontSize: 10, color: "#475569", marginBottom: 6 }}>
                         목표마진 {fp(nv(tm))}% 최소가
                       </div>
                       <div style={{ fontSize: 16, fontFamily: "JetBrains Mono, monospace", fontWeight: 700,
@@ -957,7 +957,7 @@
               {/* 옵션별 마진 비교 (옵션 2개 이상일 때) */}
               {options.length > 1 && (
                 <Card style={{ marginBottom: 14 }}>
-                  <div style={{ fontSize: 10, fontWeight: 700, color: "#5F6B78",
+                  <div style={{ fontSize: 10, fontWeight: 700, color: "#334155",
                     textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 10 }}>
                     📊 옵션별 마진 비교
                   </div>
@@ -973,37 +973,37 @@
                         style={{ display: "flex", alignItems: "center", gap: 10,
                           padding: "9px 12px", borderRadius: 8, marginBottom: 6,
                           cursor: "pointer",
-                          background: isActive ? mc(mr) + "12" : "#FFFDF8",
-                          border: "1px solid " + (isActive ? mc(mr) + "40" : "#DCD5C3") }}>
+                          background: isActive ? mc(mr) + "12" : "#FBFAF6",
+                          border: "1px solid " + (isActive ? mc(mr) + "40" : "#E5DFCF") }}>
                         {/* 번호 */}
                         <span style={{ width: 20, height: 20, borderRadius: "50%", flexShrink: 0,
                           display: "inline-flex", alignItems: "center", justifyContent: "center",
                           fontSize: 10, fontWeight: 700,
-                          background: isActive ? mc(mr) : "#DCD5C3",
-                          color: isActive ? "#fff" : "#8B95A1" }}>{i+1}</span>
+                          background: isActive ? mc(mr) : "#E5DFCF",
+                          color: isActive ? "#fff" : "#94A3B8" }}>{i+1}</span>
                         {/* 이름 */}
                         <span style={{ flex: 1, fontSize: 12, fontWeight: isActive ? 700 : 500,
-                          color: isActive ? "#1B2A3D" : "#5F6B78" }}>{opt.name}</span>
+                          color: isActive ? "#1E293B" : "#475569" }}>{opt.name}</span>
                         {/* 매입가 */}
-                        <span style={{ fontSize: 11, color: "#8B95A1",
+                        <span style={{ fontSize: 11, color: "#64748B",
                           fontFamily: "JetBrains Mono, monospace" }}>
                           {opt.bp || "—"} {cur}
                         </span>
                         {/* 판매가 */}
-                        <span style={{ fontSize: 11, color: "#5F6B78",
+                        <span style={{ fontSize: 11, color: "#334155",
                           fontFamily: "JetBrains Mono, monospace", fontWeight: 600 }}>
                           {sp_ > 0 ? `₩${fmt(sp_)}` : "—"}
                         </span>
                         {/* 마진율 */}
                         <span style={{ fontSize: 13, fontWeight: 900,
                           fontFamily: "JetBrains Mono, monospace",
-                          color: mr > 0 ? mc(mr) : "#DCD5C3", minWidth: 50, textAlign: "right" }}>
+                          color: mr > 0 ? mc(mr) : "#CBD5E1", minWidth: 50, textAlign: "right" }}>
                           {mr > 0 ? `${fp(mr)}%` : "—"}
                         </span>
                       </div>
                     );
                   })}
-                  <div style={{ fontSize: 10, color: "#8B95A1", marginTop: 4, textAlign: "center" }}>
+                  <div style={{ fontSize: 10, color: "#94A3B8", marginTop: 4, textAlign: "center" }}>
                     행을 클릭하면 해당 옵션의 상세 분석이 아래에 표시됩니다
                   </div>
                 </Card>
@@ -1024,19 +1024,19 @@
                   </div>
                   <div style={{ textAlign: "right", display: "grid", rowGap: 10 }}>
                     <div>
-                      <div style={{ fontSize: 10, color: "#8B95A1", marginBottom: 2 }}>판매가</div>
+                      <div style={{ fontSize: 10, color: "#8C8472", marginBottom: 2 }}>판매가</div>
                       <div style={{ fontSize: 18, fontFamily: "JetBrains Mono, monospace",
-                        color: "#5F6B78" }}>{fmt(C.SP)}원</div>
+                        color: "#475569" }}>{fmt(C.SP)}원</div>
                     </div>
                     <div>
-                      <div style={{ fontSize: 10, color: "#8B95A1", marginBottom: 2 }}>총비용</div>
+                      <div style={{ fontSize: 10, color: "#8C8472", marginBottom: 2 }}>총비용</div>
                       <div style={{ fontSize: 18, fontFamily: "JetBrains Mono, monospace",
-                        color: "#5F6B78" }}>{fmt(C.totalCost)}원</div>
+                        color: "#475569" }}>{fmt(C.totalCost)}원</div>
                     </div>
                   </div>
                 </div>
-                <div style={{ position: "relative", height: 12, background: "#EDE7D8",
-                  borderRadius: 6, overflow: "hidden", border: "1px solid #DCD5C3" }}>
+                <div style={{ position: "relative", height: 12, background: "#EFEAE0",
+                  borderRadius: 6, overflow: "hidden", border: "1px solid #E5DFCF" }}>
                   <div style={{
                     height: "100%", borderRadius: 6,
                     width: `${Math.min(Math.max(C.marginRate, 0), 50) / 50 * 100}%`,
@@ -1045,12 +1045,12 @@
                   }} />
                   {[10, 20, 30, 40].map(v => (
                     <div key={v} style={{ position: "absolute", top: 0, bottom: 0,
-                      left: `${v / 50 * 100}%`, width: 1, background: "#DCD5C3" }} />
+                      left: `${v / 50 * 100}%`, width: 1, background: "#E5DFCF" }} />
                   ))}
                 </div>
                 <div style={{ display: "flex", justifyContent: "space-between", marginTop: 4 }}>
                   {["0%","10%","20%","30%","40%","50%"].map(v => (
-                    <span key={v} style={{ fontSize: 9, color: "#8B95A1",
+                    <span key={v} style={{ fontSize: 9, color: "#8C8472",
                       fontFamily: "JetBrains Mono, monospace" }}>{v}</span>
                   ))}
                 </div>
@@ -1065,8 +1065,8 @@
                       : "🔴 손실"}
                   </div>
                   <div style={{ padding: "4px 12px", borderRadius: 100,
-                    background: "#FFFDF8", border: "1px solid #DCD5C3",
-                    fontSize: 11, color: "#5F6B78" }}>
+                    background: "#FBFAF6", border: "1px solid #E5DFCF",
+                    fontSize: 11, color: "#475569" }}>
                     {ch === "rocket" ? "🚀 로켓그로스" : "🏪 마켓플레이스"} · {CATS[ci].label}
                     {C.promoActive ? ` · 🎁 ${promo === "90" ? "첫90일" : "+270일"}` : ""}
                   </div>
@@ -1077,7 +1077,7 @@
                 {[
                   { t: "수입원가",         v: C.impTotal,  c: "#3B82F6",
                     s: `매입 ${fmt(C.buyKrw)}원` },
-                  { t: "판매/운영비",      v: C.sellTotal, c: "#C2703D",
+                  { t: "판매/운영비",      v: C.sellTotal, c: "#EE4D2D",
                     s: `수수료 ${fp(C.catFee)}% + 물류비` },
                   { t: "손익분기가 (BEP)", v: C.bepPrice,
                     c: C.SP >= C.bepPrice ? "#4ADE80" : "#F87171",
@@ -1088,10 +1088,10 @@
                 ].map((m, i) => (
                   <div key={i} style={{ background: "#FFFFFF", borderRadius: 10,
                     padding: "14px 16px", border: "1px solid " + m.c + "20" }}>
-                    <div style={{ fontSize: 10, color: "#5F6B78", marginBottom: 6 }}>{m.t}</div>
+                    <div style={{ fontSize: 10, color: "#475569", marginBottom: 6 }}>{m.t}</div>
                     <div style={{ fontSize: 18, fontFamily: "JetBrains Mono, monospace",
                       color: m.c, fontWeight: 700 }}>{fmt(m.v)}원</div>
-                    <div style={{ fontSize: 10, color: "#5F6B78", marginTop: 4 }}>{m.s}</div>
+                    <div style={{ fontSize: 10, color: "#334155", marginTop: 4 }}>{m.s}</div>
                   </div>
                 ))}
               </div>
@@ -1112,8 +1112,8 @@
                     <div key={i} style={{ display: "flex", alignItems: "center", gap: 5 }}>
                       <div style={{ width: 8, height: 8, borderRadius: 2,
                         background: b.color, flexShrink: 0 }} />
-                      <span style={{ fontSize: 11, color: "#5F6B78" }}>{b.label}</span>
-                      <span style={{ fontSize: 11, fontFamily: "JetBrains Mono, monospace", color: "#8B95A1" }}>
+                      <span style={{ fontSize: 11, color: "#475569" }}>{b.label}</span>
+                      <span style={{ fontSize: 11, fontFamily: "JetBrains Mono, monospace", color: "#8C8472" }}>
                         {C.SP > 0 ? fp(b.val / C.SP * 100) : "0.0"}%
                       </span>
                     </div>
@@ -1133,14 +1133,14 @@
                 <CostRow label="  · 통관비"              value={C.clAmt} />
                 <CostRow label="수입원가 소계" value={C.impTotal} accent="#3B82F6" bold />
                 <div style={{ height: 10 }} />
-                <div style={{ fontSize: 11, color: "#C2703D", fontWeight: 700, marginBottom: 8 }}>
+                <div style={{ fontSize: 11, color: "#EE4D2D", fontWeight: 700, marginBottom: 8 }}>
                   🛒 판매/운영비{C.promoActive ? ` · 로켓그로스 ${promo === "90" ? "첫 90일" : "+270일"} 혜택 적용 중` : ""}
                 </div>
                 <CostRow label={`  · 카테고리 수수료 (${fp(C.catFee)}%)`} value={C.commission} />
                 <CostRow label={`  · ${ch === "rocket" ? "로켓그로스 물류비" : "마켓플레이스 배송비"}${promo === "90" ? " (혜택 0원)" : ""}`} value={C.logistic} />
                 <CostRow label={`  · 광고비 (${ar}%)`}         value={C.adCost} />
                 <CostRow label={`  · 반품비용 (${rr}% × 30%)${C.promoActive ? " (혜택 0원)" : ""}`} value={C.retCost} />
-                <CostRow label="판매/운영비 소계" value={C.sellTotal} accent="#C2703D" bold />
+                <CostRow label="판매/운영비 소계" value={C.sellTotal} accent="#EE4D2D" bold />
                 {taxType !== "exempt" && (
                   <React.Fragment>
                     <div style={{ fontSize: 11, color: "#0369A1", fontWeight: 700, marginBottom: 8, marginTop: 4 }}>
@@ -1156,11 +1156,11 @@
                   </React.Fragment>
                 )}
                 <div style={{ height: 8 }} />
-                <CostRow label="총 비용" value={C.totalCost} accent="#8B95A1" bold />
+                <CostRow label="총 비용" value={C.totalCost} accent="#64748B" bold />
                 <div style={{ display: "flex", justifyContent: "space-between",
                   alignItems: "center", padding: "12px 0 4px",
-                  borderTop: "1px solid #DCD5C3", marginTop: 8 }}>
-                  <span style={{ fontSize: 15, fontWeight: 900, color: "#1B2A3D" }}>예상 마진</span>
+                  borderTop: "1px solid #E5DFCF", marginTop: 8 }}>
+                  <span style={{ fontSize: 15, fontWeight: 900, color: "#1E293B" }}>예상 마진</span>
                   <div style={{ textAlign: "right" }}>
                     <span style={{ fontSize: 19, fontWeight: 900,
                       fontFamily: "JetBrains Mono, monospace", color: mc(C.marginRate) }}>
