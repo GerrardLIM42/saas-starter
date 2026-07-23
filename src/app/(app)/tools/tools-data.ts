@@ -1,6 +1,7 @@
 export type ToolDef = {
   slug: string;
-  file: string; // public/tools 아래 파일명
+  file?: string; // public/tools 아래 파일명 (iframe 방식 도구만 사용)
+  internalHref?: string; // 서버 API가 필요한 도구는 iframe 대신 실제 Next.js 라우트로 연결
   navLabel: string; // 사이드바에 표시할 짧은 이름
   title: string;
   desc: string;
@@ -58,5 +59,13 @@ export const TOOLS: ToolDef[] = [
     title: "소싱 매니페스트 — 1688 → 쿠팡그로스",
     desc: "1688 사입 후보를 링크·이미지와 함께 등록해 카테고리별 수수료·묶음상품·폴더 단위로 비교 검토합니다.",
     icon: "🗂️",
+  },
+  {
+    slug: "keyword-trends",
+    internalHref: "/tools/keyword-trends",
+    navLabel: "키워드 분석",
+    title: "네이버 키워드 분석",
+    desc: "네이버 데이터랩으로 검색어 트렌드·연관 키워드·쇼핑인사이트(연령/성별/기기)를 조회합니다. (본인 네이버 API 키 필요)",
+    icon: "🔍",
   },
 ];

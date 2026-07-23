@@ -88,7 +88,7 @@ export default function ToolsIndexPage() {
               </button>
             </div>
             <Link
-              href={`/tools/${tool.slug}`}
+              href={tool.internalHref ?? `/tools/${tool.slug}`}
               className="flex-1 min-w-0 flex items-center gap-4 py-1 hover:opacity-80 transition"
             >
               <span className="text-2xl">{tool.icon}</span>

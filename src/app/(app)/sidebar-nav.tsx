@@ -67,7 +67,12 @@ export function SidebarNav() {
         </span>
       </Link>
       {tools.map((tool) => (
-        <NavLink key={tool.slug} href={`/tools/${tool.slug}`} label={tool.navLabel} icon={tool.icon} />
+        <NavLink
+          key={tool.slug}
+          href={tool.internalHref ?? `/tools/${tool.slug}`}
+          label={tool.navLabel}
+          icon={tool.icon}
+        />
       ))}
     </nav>
   );
