@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>MORIVA — 구성 데모 (기능 비활성)</title>
+<style>
+  :root{
+    --navy:#071a35;
+    --navy2:#0d2547;
+    --gold:#c9961a;
+    --line:#e5e7eb;
+    --muted:#6b7280;
+    --paper:#f4f6f7;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Malgun Gothic","Apple SD Gothic Neo","Segoe UI",sans-serif;
+    color:var(--navy);
+    background:#fff;
+    padding-top:26px; /* 상단 데모 배지 자리 */
+    -webkit-text-size-adjust:100%;
+  }
+  a{color:inherit;text-decoration:none;}
+  button{font-family:inherit;cursor:pointer;}
+
+  /* ── 상단 데모 배지 ── */
+  .demo-badge{
+    position:fixed;top:0;left:0;right:0;z-index:500;
+    background:var(--gold);color:var(--navy);
+    text-align:center;font-size:11px;font-weight:800;letter-spacing:.04em;
+    padding:6px 8px;
+  }
+
+  /* ── 화면 전환 ── */
+  .screen{display:none;}
+  .screen.active{display:block;}
+  .app-screen{display:none;}
+  .app-screen.active{display:block;}
+
+  /* ══════════════ 홈(랜딩) ══════════════ */
+  #screen-landing{background:var(--navy);color:#fff;}
+  .l-nav{position:sticky;top:26px;z-index:20;background:rgba(7,26,53,.92);backdrop-filter:blur(8px);border-bottom:1px solid rgba(255,255,255,.1);}
+  .l-nav-inner{max-width:1000px;margin:0 auto;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;}
+  .brand{display:flex;align-items:center;gap:8px;font-weight:800;letter-spacing:.02em;}
+  .brand .chip{background:#fff;border-radius:6px;padding:4px;display:flex;}
+  .l-nav-links{display:flex;gap:20px;font-size:14px;color:rgba(255,255,255,.7);}
+  .l-nav-actions{display:flex;align-items:center;gap:10px;font-size:14px;}
+  .btn-gold{background:var(--gold);color:var(--navy);border:none;border-radius:6px;padding:9px 16px;font-weight:700;font-size:13px;}
+  .btn-gold:hover{filter:brightness(1.08);}
+  .btn-ghost-lt{color:rgba(255,255,255,.75);background:none;border:none;font-size:13px;}
+  .hero{max-width:640px;margin:0 auto;padding:64px 20px 40px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:22px;position:relative;}
+  .hero-badge{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.05);padding:7px 16px;border-radius:999px;font-size:12px;color:rgba(255,255,255,.8);}
+  .hero-badge i{width:6px;height:6px;border-radius:50%;background:var(--gold);display:inline-block;}
+  .hero h1{font-size:34px;line-height:1.25;font-weight:800;margin:0;letter-spacing:-.02em;}
+  .hero h1 .accent{color:var(--gold);}
+  .hero p{color:rgba(255,255,255,.6);font-size:15px;line-height:1.7;max-width:440px;margin:0;}
+  .hero-actions{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;}
+  .btn-outline-lt{border:1px solid rgba(255,255,255,.25);color:#fff;background:none;border-radius:6px;padding:11px 20px;font-size:13px;font-weight:700;}
+  .steps-strip{margin-top:14px;width:100%;max-width:560px;display:grid;grid-template-columns:repeat(3,1fr);gap:10px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:20px;}
+  .steps-strip div{display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center;}
+  .step-num{width:28px;height:28px;border-radius:50%;background:rgba(201,150,26,.15);color:var(--gold);font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;}
+  .steps-strip strong{font-size:12px;}
+  .steps-strip small{font-size:10px;color:rgba(255,255,255,.5);}
+
+  .l-section{max-width:800px;margin:0 auto;padding:40px 20px;}
+  .l-features{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  .l-feature{border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:6px;}
+  .l-feature h3{margin:0;font-size:14px;}
+  .l-feature p{margin:0;font-size:12.5px;color:rgba(255,255,255,.6);line-height:1.6;}
+
+  .l-pricing-head{text-align:center;margin-bottom:20px;}
+  .l-pricing-head h2{margin:0 0 6px;font-size:22px;}
+  .l-pricing-head p{margin:0;font-size:13px;color:rgba(255,255,255,.5);}
+  .interval-toggle{display:flex;justify-content:center;margin-bottom:22px;}
+  .interval-toggle .box{display:inline-flex;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.05);border-radius:999px;padding:4px;}
+  .interval-toggle button{border:none;background:none;color:rgba(255,255,255,.6);border-radius:999px;padding:7px 16px;font-size:12.5px;}
+  .interval-toggle button.active{background:var(--gold);color:var(--navy);font-weight:700;}
+  .l-plans{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  .l-plan{border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.03);border-radius:14px;padding:22px;display:flex;flex-direction:column;gap:12px;}
+  .l-plan.hl{border-color:rgba(201,150,26,.6);background:rgba(255,255,255,.06);box-shadow:0 0 40px rgba(201,150,26,.12);}
+  .l-plan h3{margin:0;font-size:16px;}
+  .l-plan .sub{font-size:12px;color:rgba(255,255,255,.5);margin-top:2px;}
+  .l-plan .price{font-size:26px;font-weight:800;}
+  .l-plan ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px;font-size:12.5px;color:rgba(255,255,255,.75);}
+  .l-plan li:before{content:"✓ ";color:var(--gold);}
+  .l-credit-pack{margin-top:16px;border:1px dashed rgba(255,255,255,.15);border-radius:14px;padding:16px;text-align:center;font-size:12.5px;color:rgba(255,255,255,.6);}
+  .l-faq{border-top:1px solid rgba(255,255,255,.1);}
+  .l-faq h2{text-align:center;font-size:20px;}
+  .l-faq-item{padding:14px 0;border-bottom:1px solid rgba(255,255,255,.08);}
+  .l-faq-item p:first-child{margin:0 0 4px;font-weight:600;font-size:13.5px;}
+  .l-faq-item p:last-child{margin:0;font-size:12.5px;color:rgba(255,255,255,.55);line-height:1.6;}
+  .l-cta{text-align:center;padding:56px 20px;border-top:1px solid rgba(255,255,255,.1);display:flex;flex-direction:column;align-items:center;gap:10px;}
+  .l-cta h2{margin:0;font-size:20px;}
+  .l-cta p{margin:0;font-size:12.5px;color:rgba(255,255,255,.6);}
+  .l-footer{text-align:center;padding:36px 20px;border-top:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.35);font-size:11px;display:flex;flex-direction:column;align-items:center;gap:6px;}
+
+  @media (max-width:640px){
+    .l-nav-links{display:none;}
+    .l-features,.l-plans{grid-template-columns:1fr;}
+    .hero h1{font-size:27px;}
+  }
+
+  /* ══════════════ 앱 셸(사이드바) ══════════════ */
+  #shell{display:none;min-height:100vh;background:var(--paper);}
+  #shell.active{display:flex;}
+  #sidebar{
+    width:230px;flex:0 0 auto;background:var(--navy);color:#fff;
+    display:flex;flex-direction:column;justify-content:space-between;
+    position:sticky;top:26px;height:calc(100vh - 26px);
+  }
+  #sidebar .top{display:flex;flex-direction:column;gap:18px;padding-top:22px;}
+  #sidebar .brand{padding:0 16px;}
+  .side-nav{display:flex;flex-direction:column;gap:2px;padding:0 12px;}
+  .side-link{display:flex;align-items:center;gap:10px;border-radius:8px;padding:9px 12px;font-size:13.5px;font-weight:500;color:rgba(255,255,255,.6);border:none;background:none;text-align:left;width:100%;}
+  .side-link:hover{background:rgba(255,255,255,.05);color:#fff;}
+  .side-link.active{background:rgba(201,150,26,.15);color:var(--gold);}
+  .side-group-label{display:flex;justify-content:space-between;align-items:center;margin:14px 0 2px;padding:0 12px;font-size:10px;font-weight:700;letter-spacing:.08em;color:rgba(255,255,255,.3);}
+  #sidebar .bottom{padding:16px;border-top:1px solid rgba(255,255,255,.1);display:flex;flex-direction:column;gap:10px;}
+  #sidebar .bottom .email{font-size:11px;color:rgba(255,255,255,.4);}
+  #sidebar .bottom .credit{font-size:13px;font-weight:600;color:var(--gold);}
+  #sidebar .bottom button{background:none;border:none;color:rgba(255,255,255,.5);font-size:11px;text-align:left;padding:0;}
+
+  #mobile-topbar{display:none;position:fixed;top:26px;left:0;right:0;z-index:60;background:var(--navy);color:#fff;align-items:center;justify-content:space-between;padding:12px 16px;}
+  #mobile-topbar .brand{gap:8px;font-size:14px;}
+  #hamburger{background:none;border:none;color:#fff;font-size:20px;line-height:1;padding:4px 6px;}
+  #mobile-topbar .credit-badge{font-size:11px;color:var(--gold);}
+  #drawer-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:55;}
+
+  main{flex:1;min-width:0;}
+  .app-screen{max-width:760px;margin:0 auto;padding:34px 22px;}
+  .page-h1{font-size:19px;font-weight:700;margin:0;}
+  .page-sub{font-size:13px;color:var(--muted);margin:4px 0 0;}
+  .card{border:1px solid var(--line);background:#fff;border-radius:12px;padding:18px;}
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  .stat-label{font-size:11px;color:#9ca3af;margin:0;}
+  .stat-value{font-size:22px;font-weight:800;margin:4px 0 0;}
+  .stat-link{margin-top:10px;display:inline-block;font-size:11.5px;color:var(--gold);font-weight:600;background:none;border:none;padding:0;}
+  .quick-link{display:flex;align-items:center;gap:14px;border:1px solid var(--line);background:#fff;border-radius:12px;padding:14px;width:100%;text-align:left;}
+  .quick-link:hover{border-color:rgba(201,150,26,.5);}
+  .quick-link .ic{font-size:20px;}
+  .quick-link .tx{flex:1;min-width:0;}
+  .quick-link .tx p:first-child{margin:0;font-size:13px;font-weight:600;}
+  .quick-link .tx p:last-child{margin:2px 0 0;font-size:11.5px;color:var(--muted);}
+  .quick-link .go{font-size:12px;color:#9ca3af;}
+  .stack{display:flex;flex-direction:column;gap:10px;}
+  .stack-lg{display:flex;flex-direction:column;gap:24px;}
+
+  .chat-mock{border:1px solid var(--line);border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:8px;background:var(--paper);}
+  .bubble{max-width:80%;padding:8px 11px;border-radius:10px;font-size:12.5px;line-height:1.5;}
+  .bubble.bot{background:#fff;border:1px solid var(--line);align-self:flex-start;}
+  .bubble.me{background:var(--navy);color:#fff;align-self:flex-end;}
+  .chat-input-row{display:flex;gap:6px;margin-top:4px;}
+  .chat-input-row input{flex:1;border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:12.5px;background:#f3f4f6;color:#9ca3af;}
+  .chat-input-row button{border:none;background:var(--navy);color:#fff;border-radius:8px;padding:8px 14px;font-size:12px;}
+
+  /* 스튜디오 미니 데모 */
+  .studio-mini{background:var(--navy);color:#fff;border-radius:16px;padding:26px 22px;text-align:center;}
+  .studio-mini .kicker{font-size:10.5px;letter-spacing:.14em;color:var(--gold);font-weight:700;}
+  .studio-mini h2{font-size:22px;margin:10px 0;line-height:1.3;}
+  .studio-mini h2 .accent{color:var(--gold);}
+  .studio-mini-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:16px;background:rgba(255,255,255,.06);border-radius:12px;padding:14px;}
+  .studio-mini-steps div{display:flex;flex-direction:column;align-items:center;gap:3px;}
+  .studio-mini-steps .n{width:24px;height:24px;border-radius:50%;background:rgba(201,150,26,.18);color:var(--gold);font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;}
+  .studio-mini-steps strong{font-size:11px;}
+  .studio-mini-steps small{font-size:9.5px;color:rgba(255,255,255,.55);}
+  .studio-block{margin-top:16px;}
+  .studio-block-label{font-size:11px;font-weight:700;color:#9ca3af;letter-spacing:.05em;margin-bottom:8px;}
+  .drop-zone-mock{border:1.5px dashed var(--line);border-radius:12px;padding:26px 16px;text-align:center;color:#9ca3af;font-size:12.5px;background:#fafbfc;}
+  .tone-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
+  .tone-chip{border:1px solid var(--line);border-radius:9px;padding:10px 8px;font-size:11px;text-align:center;background:#fff;}
+  .tone-chip.sel{border-color:var(--navy);background:#f0f3f6;font-weight:700;}
+  .generate-btn-mock{margin-top:14px;width:100%;border:none;border-radius:12px;padding:14px;background:linear-gradient(135deg,#06162d,#0d345e);color:#fff;font-weight:700;font-size:13px;}
+
+  /* 도구 목록/상세 */
+  .tool-card{display:flex;align-items:center;gap:14px;border:1px solid var(--line);background:#fff;border-radius:12px;padding:14px;width:100%;text-align:left;}
+  .tool-card:hover{border-color:rgba(201,150,26,.5);}
+  .tool-card .ic{font-size:22px;}
+  .back-btn{border:none;background:none;color:var(--muted);font-size:12.5px;padding:0;margin-bottom:14px;}
+  .tool-detail-frame{margin-top:16px;border:1px solid var(--line);border-radius:14px;background:#fafbfc;min-height:320px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:#9ca3af;text-align:center;padding:20px;}
+  .tool-detail-frame .big{font-size:30px;}
+
+  /* 크레딧 테이블 */
+  table{width:100%;border-collapse:collapse;font-size:12.5px;}
+  thead th{text-align:left;font-size:10.5px;color:#9ca3af;font-weight:700;padding:0 0 8px;border-bottom:1px solid var(--line);}
+  tbody td{padding:10px 0;border-bottom:1px solid var(--line);}
+  .amt-plus{color:#1f9153;font-weight:700;}
+  .amt-minus{color:#b8453a;font-weight:700;}
+
+  /* 구독 */
+  .plan-card-lt{border:1px solid var(--line);background:#fff;border-radius:12px;padding:18px;display:flex;flex-direction:column;gap:10px;}
+  .plan-card-lt.hl{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold) inset;}
+  .plan-card-lt h3{margin:0;font-size:15px;}
+  .plan-card-lt .price{font-size:22px;font-weight:800;}
+  .plan-card-lt ul{list-style:none;margin:0;padding:0;font-size:12px;color:#4b5563;display:flex;flex-direction:column;gap:5px;}
+  .plan-card-lt li:before{content:"✓ ";color:var(--gold);}
+
+  /* 설정 */
+  .field-row label{font-size:12px;font-weight:600;display:block;margin-bottom:5px;}
+  .field-row input{width:100%;border:1px solid var(--line);border-radius:8px;padding:9px 11px;font-size:13px;background:#f9fafb;color:#6b7280;}
+  .token-box{font-family:ui-monospace,monospace;font-size:11px;background:#f3f4f6;border:1px solid var(--line);border-radius:8px;padding:10px;word-break:break-all;color:#4b5563;}
+  .btn-navy{border:none;background:var(--navy);color:#fff;border-radius:8px;padding:9px 14px;font-size:12.5px;font-weight:600;}
+  .btn-line{border:1px solid var(--line);background:#fff;color:#374151;border-radius:8px;padding:9px 14px;font-size:12.5px;font-weight:600;}
+
+  @media (max-width:640px){
+    #sidebar{display:none;}
+    #sidebar.open{display:flex;position:fixed;top:26px;left:0;bottom:0;z-index:70;width:240px;height:auto;}
+    #drawer-backdrop.open{display:block;}
+    #mobile-topbar{display:flex;}
+    main{padding-top:52px;}
+    .grid-2{grid-template-columns:1fr;}
+    .tone-row{grid-template-columns:1fr;}
+  }
+
+  /* 토스트 */
+  #toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(20px);background:#1f2937;color:#fff;font-size:12.5px;padding:10px 16px;border-radius:999px;opacity:0;pointer-events:none;transition:.25s;z-index:999;white-space:nowrap;}
+  #toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+</style>
+</head>
+<body>
+
+<div class="demo-badge">데모 모드 · 화면 구성 확인용입니다 (실제 기능은 동작하지 않습니다)</div>
+
+<!-- ══════════════ 홈(랜딩) ══════════════ -->
+<div id="screen-landing" class="screen active">
+  <nav class="l-nav">
+    <div class="l-nav-inner">
+      <a href="#" class="brand" onclick="return false;">
+        <span class="chip" style="background:#fff;border-radius:6px;padding:3px;display:flex;"><span id="logo-slot-1"></span></span>
+        <span>MORIVA</span>
+      </a>
+      <div class="l-nav-links">
+        <a href="#features">기능</a>
+        <a href="#pricing">요금제</a>
+      </div>
+      <div class="l-nav-actions">
+        <button class="btn-ghost-lt" onclick="goApp('dashboard')">로그인</button>
+        <button class="btn-gold" onclick="goApp('dashboard')">시작하기</button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="hero">
+    <span class="hero-badge"><i></i>이커머스 셀러를 위한 AI 콘텐츠 스튜디오</span>
+    <h1>제품 사진 한 장으로<br><span class="accent">쿠팡 콘텐츠를 완성하세요</span></h1>
+    <p>내 제품, 경쟁사 썸네일·상세페이지, 리뷰 사진을 올리면 AI가 분석해서 쿠팡 썸네일 프롬프트와 상세페이지 카피 초안까지 자동으로 만들어드립니다.</p>
+    <div class="hero-actions">
+      <button class="btn-gold" style="padding:12px 22px;font-size:14px;" onclick="goApp('dashboard')">무료로 시작하기</button>
+      <a class="btn-outline-lt" href="#features">기능 살펴보기</a>
+    </div>
+    <div class="steps-strip">
+      <div><span class="step-num">01</span><strong>이미지 업로드</strong><small>제품·경쟁사·리뷰 사진을 올려요</small></div>
+      <div><span class="step-num">02</span><strong>AI 분석</strong><small>판매 포인트와 구매 장벽을 추출해요</small></div>
+      <div><span class="step-num">03</span><strong>콘텐츠 생성</strong><small>썸네일·상세페이지·카피 초안 완성</small></div>
+    </div>
+  </div>
+
+  <section id="features" class="l-section l-features">
+    <div class="l-feature"><h3>AI 제품·리뷰 분석</h3><p>내 제품, 경쟁사 썸네일·상세페이지, 리뷰 스크린샷을 올리면 AI가 핵심 판매 포인트와 구매 장벽을 읽어냅니다.</p></div>
+    <div class="l-feature"><h3>쿠팡 최적화 프롬프트</h3><p>썸네일·상세페이지용 이미지 생성 프롬프트를 바로 만들어 드려요. 복사해서 ChatGPT에 붙여넣기만 하면 됩니다.</p></div>
+    <div class="l-feature"><h3>카피라이팅 자동화</h3><p>헤드라인, 서브카피, 신뢰 문구, CTA까지 상세페이지에 바로 쓸 수 있는 초안을 함께 제공합니다.</p></div>
+    <div class="l-feature"><h3>구독 + 크레딧 하이브리드</h3><p>월간/연간 구독으로 매달 기본 크레딧을 받고, 부족하면 언제든 추가로 충전할 수 있어요.</p></div>
+  </section>
+
+  <section id="pricing" class="l-section">
+    <div class="l-pricing-head">
+      <h2>요금제</h2>
+      <p>구독으로 매달 기본 크레딧을 받고, 부족하면 언제든 추가 구매하세요.</p>
+    </div>
+    <div class="interval-toggle">
+      <div class="box">
+        <button class="active" onclick="setInterval_(this,'monthly')">월간 결제</button>
+        <button onclick="setInterval_(this,'yearly')">연간 결제 <span style="opacity:.7;font-size:10.5px;">(2개월 무료)</span></button>
+      </div>
+    </div>
+    <div class="l-plans">
+      <div class="l-plan">
+        <div><h3>Free</h3><div class="sub">가입 시 50 크레딧 (1회)</div></div>
+        <div class="price" data-plan="free">무료</div>
+        <ul><li>스튜디오 분석 체험</li><li>동시 요청 1개</li><li>커뮤니티 지원</li></ul>
+        <button class="btn-outline-lt" style="color:var(--navy);border-color:var(--line);margin-top:auto;" onclick="goApp('dashboard')">무료로 시작하기</button>
+      </div>
+      <div class="l-plan hl">
+        <div><h3>Pro</h3><div class="sub">매월 2,000 크레딧 자동 지급</div></div>
+        <div class="price" data-plan="pro" data-monthly="₩19,000" data-yearly="₩190,000">₩19,000<span style="font-size:12px;font-weight:400;color:rgba(255,255,255,.5);"> / 월</span></div>
+        <ul><li>스튜디오 무제한 분석</li><li>동시 요청 5개</li><li>이메일 지원</li><li>크레딧 추가 구매 가능</li></ul>
+        <button class="btn-gold" style="margin-top:auto;" onclick="goApp('dashboard')">Pro 시작하기</button>
+      </div>
+    </div>
+    <div class="l-credit-pack">크레딧이 더 필요하신가요? 1,000 크레딧 = ₩10,000 (구독과 별도로 언제든 추가 구매)</div>
+  </section>
+
+  <section class="l-section l-faq">
+    <h2>자주 묻는 질문</h2>
+    <div class="l-faq-item"><p>크레딧은 이월되나요?</p><p>구독이 유지되는 동안에는 사용하지 않은 크레딧이 다음 달로 이월됩니다. 구독을 해지하면 보유 크레딧은 해지 시점 이후 소멸됩니다.</p></div>
+    <div class="l-faq-item"><p>환불이 가능한가요?</p><p>결제 후 7일 이내, 크레딧을 사용하지 않은 경우에 한해 전액 환불이 가능합니다. 자세한 내용은 고객센터로 문의해주세요.</p></div>
+    <div class="l-faq-item" style="border-bottom:none;"><p>플랜은 언제든 변경할 수 있나요?</p><p>네, 대시보드의 구독 페이지에서 언제든 업그레이드/다운그레이드하거나 결제 수단을 관리할 수 있습니다.</p></div>
+  </section>
+
+  <section class="l-cta">
+    <h2>지금 바로 시작해보세요</h2>
+    <p>가입하면 50 크레딧을 바로 드립니다. 카드 등록 없이 지금 체험해보세요.</p>
+    <button class="btn-gold" style="padding:12px 22px;font-size:14px;" onclick="goApp('dashboard')">무료 가입하기</button>
+  </section>
+
+  <footer class="l-footer">
+    <div style="display:flex;align-items:center;gap:8px;">
+      <span class="chip" style="background:#fff;border-radius:6px;padding:3px;display:flex;"><span id="logo-slot-2"></span></span>
+      <span style="font-weight:700;color:rgba(255,255,255,.7);">MORIVA</span>
+    </div>
+    <p style="margin:0;">Better Life, Better Move</p>
+    <p style="margin:0;">© 2026 MORIVA</p>
+  </footer>
+</div>
+
+<!-- ══════════════ 앱 셸 ══════════════ -->
+<div id="shell">
+  <div id="drawer-backdrop" onclick="closeDrawer()"></div>
+
+  <div id="mobile-topbar">
+    <button id="hamburger" onclick="openDrawer()">☰</button>
+    <span class="brand" style="display:flex;align-items:center;gap:6px;"><span class="chip" style="background:#fff;border-radius:5px;padding:3px;display:flex;"><span id="logo-slot-3"></span></span>MORIVA</span>
+    <span class="credit-badge">크레딧 1,240</span>
+  </div>
+
+  <aside id="sidebar">
+    <div class="top">
+      <a href="#" class="brand" style="display:flex;align-items:center;gap:8px;" onclick="return false;">
+        <span class="chip" style="background:#fff;border-radius:6px;padding:4px;display:flex;"><span id="logo-slot-4"></span></span>
+        <span>MORIVA</span>
+      </a>
+      <nav class="side-nav">
+        <button class="side-link" data-nav="dashboard" onclick="goAppScreen('dashboard')">🏠 대시보드</button>
+        <button class="side-link" data-nav="studio" onclick="goAppScreen('studio')">🎨 스튜디오</button>
+        <button class="side-link" data-nav="credits" onclick="goAppScreen('credits')">💳 크레딧</button>
+        <button class="side-link" data-nav="billing" onclick="goAppScreen('billing')">⭐ 구독</button>
+        <button class="side-link" data-nav="settings" onclick="goAppScreen('settings')">⚙️ 설정</button>
+      </nav>
+      <div class="side-group-label"><span>도구</span><span onclick="goAppScreen('tools')" style="cursor:pointer;color:rgba(255,255,255,.3);">순서 변경 ↗</span></div>
+      <nav class="side-nav" id="tool-nav"></nav>
+    </div>
+    <div class="bottom">
+      <div class="email">rcy42@naver.com</div>
+      <div class="credit">보유 크레딧 1,240</div>
+      <button onclick="goLanding()">로그아웃</button>
+    </div>
+  </aside>
+
+  <main>
+    <!-- 대시보드 -->
+    <section id="app-dashboard" class="app-screen active">
+      <div class="stack-lg">
+        <div>
+          <h1 class="page-h1">안녕하세요, 홍길동 님</h1>
+          <p class="page-sub">rcy42@naver.com</p>
+        </div>
+        <div class="grid-2">
+          <div class="card">
+            <p class="stat-label">보유 크레딧</p>
+            <p class="stat-value">1,240</p>
+            <button class="stat-link" onclick="goAppScreen('billing')">크레딧 충전하기 →</button>
+          </div>
+          <div class="card">
+            <p class="stat-label">현재 플랜</p>
+            <p class="stat-value">Pro</p>
+            <button class="stat-link" onclick="goAppScreen('billing')">구독 관리 →</button>
+          </div>
+        </div>
+        <div class="stack">
+          <button class="quick-link" onclick="goAppScreen('studio')"><span class="ic">🎨</span><span class="tx"><p>MORIVA 쿠팡 콘텐츠 스튜디오</p><p>제품/경쟁사/리뷰 이미지로 쿠팡 썸네일·상세페이지 프롬프트 생성</p></span><span class="go">열기 →</span></button>
+          <button class="quick-link" onclick="goAppScreen('tools')"><span class="ic">🧰</span><span class="tx"><p>도구 모음</p><p>상품명 생성기, 가격 세팅, 상세페이지 미리보기, KC 표시사항 내비게이터</p></span><span class="go">열기 →</span></button>
+          <button class="quick-link" onclick="goAppScreen('credits')"><span class="ic">💳</span><span class="tx"><p>크레딧 내역</p><p>충전/사용 내역을 확인하세요</p></span><span class="go">열기 →</span></button>
+          <button class="quick-link" onclick="goAppScreen('billing')"><span class="ic">⭐</span><span class="tx"><p>구독 / 업그레이드</p><p>플랜을 변경하거나 크레딧을 추가 구매하세요</p></span><span class="go">열기 →</span></button>
+        </div>
+        <div class="card">
+          <p style="font-size:13px;font-weight:600;margin:0 0 10px;">AI 챗봇 체험 (크레딧 차감 데모)</p>
+          <div class="chat-mock">
+            <div class="bubble bot">안녕하세요! 무엇을 도와드릴까요?</div>
+            <div class="bubble me">쿠팡 상세페이지 문구 아이디어 줘</div>
+            <div class="bubble bot">네! 제품 특징을 알려주시면 헤드라인 초안을 만들어 드릴게요 ✍️</div>
+            <div class="chat-input-row">
+              <input disabled placeholder="데모에서는 채팅이 동작하지 않아요" onclick="toast()">
+              <button onclick="toast()">전송</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 스튜디오 -->
+    <section id="app-studio" class="app-screen">
+      <div class="studio-mini">
+        <span class="kicker">COUPANG CREATIVE WORKFLOW</span>
+        <h2>사진만 넣으면,<br><span class="accent">팔리는 설득 구조</span>가 완성됩니다.</h2>
+        <div class="studio-mini-steps">
+          <div><span class="n">1</span><strong>이미지 첨부</strong><small>영역별 최대 20장</small></div>
+          <div><span class="n">2</span><strong>AI 제품 읽기</strong><small>특징·리뷰 분석</small></div>
+          <div><span class="n">3</span><strong>이미지 제작</strong><small>복사 또는 바로 생성</small></div>
+        </div>
+      </div>
+      <div class="studio-block">
+        <div class="studio-block-label">STEP 01 · 분석할 자료를 모아주세요</div>
+        <div class="drop-zone-mock" onclick="toast()">📷 클릭하거나 이미지를 끌어오세요 (PNG · JPG · WEBP)</div>
+      </div>
+      <div class="studio-block">
+        <div class="studio-block-label">STEP 02 · 생성 설정</div>
+        <div class="tone-row">
+          <div class="tone-chip sel" onclick="selTone(this)">전환 집중형</div>
+          <div class="tone-chip" onclick="selTone(this)">신뢰 강조형</div>
+          <div class="tone-chip" onclick="selTone(this)">감성 스토리형</div>
+        </div>
+        <button class="generate-btn-mock" onclick="toast()">분석하고 콘텐츠 생성하기</button>
+      </div>
+    </section>
+
+    <!-- 도구 목록 -->
+    <section id="app-tools" class="app-screen">
+      <div style="margin-bottom:14px;">
+        <h1 class="page-h1">도구</h1>
+        <p class="page-sub">쿠팡 셀러 업무에 바로 쓸 수 있는 보조 도구 모음입니다. (데모에서는 순서 변경이 비활성화되어 있어요)</p>
+      </div>
+      <div class="stack" id="tool-grid"></div>
+    </section>
+
+    <!-- 도구 상세 -->
+    <section id="app-tool-detail" class="app-screen">
+      <button class="back-btn" onclick="goAppScreen('tools')">← 도구 목록</button>
+      <div id="tool-detail-head"></div>
+      <div class="tool-detail-frame">
+        <div class="big" id="tool-detail-icon"></div>
+        <p style="margin:0;font-size:13px;">실제 도구 화면은 이 데모에 포함되어 있지 않습니다.<br>(실제 서비스에서는 이 영역에 도구가 그대로 표시됩니다)</p>
+      </div>
+    </section>
+
+    <!-- 크레딧 -->
+    <section id="app-credits" class="app-screen">
+      <div style="margin-bottom:14px;">
+        <h1 class="page-h1">크레딧 내역</h1>
+        <p class="page-sub">보유 크레딧 <strong>1,240</strong></p>
+      </div>
+      <div class="card">
+        <table>
+          <thead><tr><th>날짜</th><th>내용</th><th>변동</th><th>잔액</th></tr></thead>
+          <tbody>
+            <tr><td>2026.07.21</td><td>구독 갱신 지급</td><td class="amt-plus">+2,000</td><td>2,890</td></tr>
+            <tr><td>2026.07.20</td><td>스튜디오 이미지 생성</td><td class="amt-minus">-15</td><td>890</td></tr>
+            <tr><td>2026.07.19</td><td>스튜디오 콘텐츠 분석</td><td class="amt-minus">-30</td><td>905</td></tr>
+            <tr><td>2026.07.02</td><td>가입 보너스</td><td class="amt-plus">+50</td><td>935</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 구독 -->
+    <section id="app-billing" class="app-screen">
+      <div style="margin-bottom:14px;">
+        <h1 class="page-h1">구독 관리</h1>
+        <p class="page-sub">현재 플랜: <strong>Pro</strong> · 다음 결제일 2026.08.23</p>
+      </div>
+      <div class="grid-2" style="margin-bottom:16px;">
+        <div class="plan-card-lt">
+          <h3>Free</h3>
+          <div class="price">무료</div>
+          <ul><li>스튜디오 분석 체험</li><li>동시 요청 1개</li></ul>
+          <button class="btn-line" onclick="toast()">다운그레이드</button>
+        </div>
+        <div class="plan-card-lt hl">
+          <h3>Pro <span style="font-size:10px;color:var(--gold);font-weight:700;">현재 플랜</span></h3>
+          <div class="price">₩19,000<span style="font-size:11px;font-weight:400;color:#9ca3af;"> / 월</span></div>
+          <ul><li>스튜디오 무제한 분석</li><li>동시 요청 5개</li><li>이메일 지원</li></ul>
+          <button class="btn-navy" onclick="toast()">결제 수단 관리</button>
+        </div>
+      </div>
+      <div class="card" style="text-align:center;">
+        <p style="margin:0 0 4px;font-size:13px;font-weight:600;">크레딧이 더 필요하신가요?</p>
+        <p style="margin:0 0 12px;font-size:12px;color:var(--muted);">1,000 크레딧 = ₩10,000</p>
+        <button class="btn-line" onclick="toast()">크레딧 추가 구매</button>
+      </div>
+    </section>
+
+    <!-- 설정 -->
+    <section id="app-settings" class="app-screen">
+      <div style="margin-bottom:14px;">
+        <h1 class="page-h1">설정</h1>
+      </div>
+      <div class="stack-lg">
+        <div class="card field-row">
+          <label>이메일</label>
+          <input value="rcy42@naver.com" disabled>
+        </div>
+        <div class="card field-row">
+          <label>이름</label>
+          <input value="홍길동" onclick="toast()" readonly>
+          <div style="margin-top:10px;"><button class="btn-navy" onclick="toast()">저장</button></div>
+        </div>
+        <div class="card">
+          <p style="font-size:13px;font-weight:600;margin:0 0 10px;">확장 프로그램 연결</p>
+          <p style="font-size:11.5px;color:var(--muted);margin:0 0 10px;">아래 코드를 크롬 확장 프로그램 설정 화면에 붙여넣으면 계정이 연결됩니다.</p>
+          <div class="token-box">moriva_ext_7f2a9c1b8e4d6a0f3c5b9d2e1a8f7c6b</div>
+          <div style="margin-top:10px;"><button class="btn-line" onclick="toast()">코드 재발급</button></div>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<div id="toast"></div>
+
+<script>
+  var LOGO_SVG = '<svg viewBox="0 0 120 104" width="22" height="19"><polygon points="8,104 44,32 58,60 50,76 44,64 24,104" fill="#071a35"/><polygon points="112,104 76,32 62,60 70,76 76,64 96,104" fill="#071a35"/><polygon points="36,104 60,56 84,104 70,104 60,84 50,104" fill="#071a35"/><polygon points="60,18 68,34 60,50 52,34" fill="#c9961a"/></svg>';
+  ['logo-slot-1','logo-slot-2','logo-slot-3','logo-slot-4'].forEach(function(id){
+    var el = document.getElementById(id);
+    if(el) el.innerHTML = LOGO_SVG;
+  });
+
+  var TOOLS = [
+    {slug:'product-name-generator', icon:'🏷️', title:'상품명 생성기', desc:'상위노출 상품명 스크린샷을 분석해 5단어 상품명 5가지를 제안합니다.'},
+    {slug:'pricing-setter', icon:'💰', title:'로켓그로스 가격 세팅 도구', desc:'최종소비자가 기준으로 판매가·즉시할인·다운할인·정상가를 자동 계산합니다.'},
+    {slug:'preview-tool', icon:'🛒', title:'쿠팡 상품페이지 미리보기 툴', desc:'썸네일·상세페이지 이미지를 실제 쿠팡 화면처럼 모바일/PC로 미리 볼 수 있습니다.'},
+    {slug:'kc-label-navigator', icon:'📋', title:'KC 표시사항 내비게이터', desc:'제품 카테고리에 맞는 KC 인증·표시사항 체크리스트와 라벨 문구를 안내합니다.'},
+    {slug:'margin-calculator', icon:'🧮', title:'쿠팡 마진 계산기', desc:'중국 직소싱 상품의 수입원가·관부가세·판매비를 반영해 마진율과 적정 판매가를 계산합니다.'},
+    {slug:'sourcing-manifest', icon:'🗂️', title:'소싱 매니페스트 — 1688 → 쿠팡그로스', desc:'1688 사입 후보를 링크·이미지와 함께 등록해 카테고리별 수수료·묶음상품·폴더 단위로 비교 검토합니다.'}
+  ];
+
+  function renderTools(){
+    var navHtml = '', gridHtml = '';
+    TOOLS.forEach(function(t, i){
+      navHtml += '<button class="side-link" data-nav="tool-'+i+'" onclick="openTool('+i+')">'+t.icon+' '+t.title.split(' ')[0]+'</button>';
+      gridHtml += '<button class="tool-card" onclick="openTool('+i+')"><span class="ic">'+t.icon+'</span><span class="tx" style="flex:1;min-width:0;text-align:left;"><p style="margin:0;font-size:13px;font-weight:600;">'+t.title+'</p><p style="margin:2px 0 0;font-size:11.5px;color:var(--muted);">'+t.desc+'</p></span><span class="go" style="font-size:12px;color:#9ca3af;">열기 →</span></button>';
+    });
+    document.getElementById('tool-nav').innerHTML = navHtml;
+    document.getElementById('tool-grid').innerHTML = gridHtml;
+  }
+  renderTools();
+
+  function openTool(i){
+    var t = TOOLS[i];
+    document.getElementById('tool-detail-head').innerHTML =
+      '<p style="margin:0;font-size:13px;font-weight:600;">'+t.title+'</p><p style="margin:2px 0 14px;font-size:11.5px;color:var(--muted);">'+t.desc+'</p>';
+    document.getElementById('tool-detail-icon').textContent = t.icon;
+    goAppScreen('tool-'+i, true);
+  }
+
+  function goApp(screenId){
+    document.getElementById('screen-landing').classList.remove('active');
+    document.getElementById('shell').classList.add('active');
+    goAppScreen(screenId || 'dashboard');
+    window.scrollTo(0,0);
+  }
+  function goLanding(){
+    document.getElementById('shell').classList.remove('active');
+    document.getElementById('screen-landing').classList.add('active');
+    closeDrawer();
+    window.scrollTo(0,0);
+  }
+
+  function goAppScreen(name, isTool){
+    document.querySelectorAll('.app-screen').forEach(function(s){ s.classList.remove('active'); });
+    var targetId = isTool ? 'app-tool-detail' : 'app-'+name;
+    var target = document.getElementById(targetId);
+    if(target) target.classList.add('active');
+
+    document.querySelectorAll('.side-link').forEach(function(b){ b.classList.remove('active'); });
+    var navKey = isTool ? name : name;
+    var navBtn = document.querySelector('.side-link[data-nav="'+navKey+'"]');
+    if(navBtn) navBtn.classList.add('active');
+
+    closeDrawer();
+    window.scrollTo(0,0);
+  }
+
+  function openDrawer(){
+    document.getElementById('sidebar').classList.add('open');
+    document.getElementById('drawer-backdrop').classList.add('open');
+  }
+  function closeDrawer(){
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('drawer-backdrop').classList.remove('open');
+  }
+
+  function selTone(el){
+    el.parentNode.querySelectorAll('.tone-chip').forEach(function(c){ c.classList.remove('sel'); });
+    el.classList.add('sel');
+  }
+
+  function setInterval_(btn, mode){
+    btn.parentNode.querySelectorAll('button').forEach(function(b){ b.classList.remove('active'); });
+    btn.classList.add('active');
+    var el = document.querySelector('.price[data-plan="pro"]');
+    if(!el) return;
+    if(mode === 'monthly'){
+      el.innerHTML = el.getAttribute('data-monthly') + '<span style="font-size:12px;font-weight:400;color:rgba(255,255,255,.5);"> / 월</span>';
+    } else {
+      el.innerHTML = el.getAttribute('data-yearly') + '<span style="font-size:12px;font-weight:400;color:rgba(255,255,255,.5);"> / 년</span>';
+    }
+  }
+
+  var toastTimer;
+  function toast(msg){
+    var el = document.getElementById('toast');
+    el.textContent = msg || '데모 화면입니다 · 실제 기능은 동작하지 않아요';
+    el.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ el.classList.remove('show'); }, 1800);
+  }
+</script>
+</body>
+</html>
