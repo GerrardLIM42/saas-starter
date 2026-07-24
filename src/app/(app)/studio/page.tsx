@@ -78,6 +78,86 @@ type AnalysisResult = {
   warnings: string[];
 };
 
+// ── 브라우저 로컬 임시 저장(자동 저장) ──
+// 클라우드 저장(로그인 필요)과 별개로, 이 페이지를 떠났다가 다시 들어와도
+// 작업 중이던 내용(첨부 이미지·분석 결과·생성 이미지 등)이 사라지지 않도록
+// IndexedDB에 자동으로 임시 저장하고 재진입 시 복원한다.
+type LocalDraft = {
+  images: Record<BucketKey, ImageAsset[]>;
+  activeBucket: BucketKey;
+  reviewText: string;
+  tone: string;
+  sectionCount: number;
+  thumbnailCount: number;
+  result: AnalysisResult | null;
+  generatedThumbnails: Record<number, string>;
+  generatedDetails: Record<number, string>;
+  savedAt: number;
+};
+
+const DRAFT_DB_NAME = "moriva-studio";
+const DRAFT_STORE_NAME = "draft";
+const DRAFT_KEY = "current";
+
+function openDraftDB(): Promise<IDBDatabase> {
+  return new Promise((resolve, reject) => {
+    const req = window.indexedDB.open(DRAFT_DB_NAME, 1);
+    req.onupgradeneeded = () => {
+      if (!req.result.objectStoreNames.contains(DRAFT_STORE_NAME)) {
+        req.result.createObjectStore(DRAFT_STORE_NAME);
+      }
+    };
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
+  });
+}
+
+async function saveLocalDraft(draft: LocalDraft) {
+  try {
+    const db = await openDraftDB();
+    await new Promise<void>((resolve, reject) => {
+      const tx = db.transaction(DRAFT_STORE_NAME, "readwrite");
+      tx.objectStore(DRAFT_STORE_NAME).put(draft, DRAFT_KEY);
+      tx.oncomplete = () => resolve();
+      tx.onerror = () => reject(tx.error);
+    });
+    db.close();
+  } catch {
+    // IndexedDB를 쓸 수 없는 환경(프라이빗 모드 등)이면 자동 저장만 조용히 건너뛴다.
+  }
+}
+
+async function loadLocalDraft(): Promise<LocalDraft | null> {
+  try {
+    const db = await openDraftDB();
+    const result = await new Promise<LocalDraft | null>((resolve, reject) => {
+      const tx = db.transaction(DRAFT_STORE_NAME, "readonly");
+      const req = tx.objectStore(DRAFT_STORE_NAME).get(DRAFT_KEY);
+      req.onsuccess = () => resolve((req.result as LocalDraft | undefined) ?? null);
+      req.onerror = () => reject(req.error);
+    });
+    db.close();
+    return result;
+  } catch {
+    return null;
+  }
+}
+
+async function clearLocalDraft() {
+  try {
+    const db = await openDraftDB();
+    await new Promise<void>((resolve, reject) => {
+      const tx = db.transaction(DRAFT_STORE_NAME, "readwrite");
+      tx.objectStore(DRAFT_STORE_NAME).delete(DRAFT_KEY);
+      tx.oncomplete = () => resolve();
+      tx.onerror = () => reject(tx.error);
+    });
+    db.close();
+  } catch {
+    // 무시
+  }
+}
+
 const MAX_IMAGES = 20;
 // Vercel Functions accept request bodies up to 4.5 MB. Base64 adds roughly 33%,
 // so the optimized source images stay below this raw-byte budget.
@@ -968,6 +1048,58 @@ export default function Home() {
     window.setTimeout(() => setNotice(null), 3200);
   }, []);
 
+  // 이 페이지를 벗어났다가 다시 들어와도 작업 중이던 내용이 남아있도록,
+  // 마운트 시 로컬에 자동 저장된 작업을 먼저 복원한다(있을 때만).
+  const draftRestoredRef = useRef(false);
+  useEffect(() => {
+    let cancelled = false;
+    void (async () => {
+      const draft = await loadLocalDraft();
+      if (cancelled) return;
+      const hasContent =
+        draft &&
+        (draft.result || Object.values(draft.images).some((list) => list.length > 0) || draft.reviewText.trim());
+      if (hasContent && draft) {
+        // eslint-disable-next-line react-hooks/set-state-in-effect -- 로컬에 저장된 이전 작업 복원 (마운트 시 1회)
+        setImages(draft.images);
+        setActiveBucket(draft.activeBucket ?? "product");
+        setReviewText(draft.reviewText ?? "");
+        setTone(draft.tone ?? "conversion");
+        setSectionCount(draft.sectionCount ?? 8);
+        setThumbnailCount(draft.thumbnailCount ?? 3);
+        setResult(draft.result ?? null);
+        setGeneratedThumbnails(draft.generatedThumbnails ?? {});
+        setGeneratedDetails(draft.generatedDetails ?? {});
+        showNotice("이전에 작업하던 내용을 이어서 불러왔습니다.");
+      }
+      draftRestoredRef.current = true;
+    })();
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 마운트 시 1회만 실행
+  }, []);
+
+  // 위 복원이 끝난 뒤부터는, 작업 내용이 바뀔 때마다 잠시 후(디바운스) 자동으로 저장한다.
+  useEffect(() => {
+    if (!draftRestoredRef.current) return;
+    const timer = window.setTimeout(() => {
+      void saveLocalDraft({
+        images,
+        activeBucket,
+        reviewText,
+        tone,
+        sectionCount,
+        thumbnailCount,
+        result,
+        generatedThumbnails,
+        generatedDetails,
+        savedAt: Date.now(),
+      });
+    }, 800);
+    return () => window.clearTimeout(timer);
+  }, [images, activeBucket, reviewText, tone, sectionCount, thumbnailCount, result, generatedThumbnails, generatedDetails]);
+
   const refreshProjects = useCallback(async () => {
     const supabase = getSupabase();
     if (!supabase) return;
@@ -1066,7 +1198,9 @@ export default function Home() {
   };
 
   const newProject = () => {
-    setProjectId(null); setProjectName("새 MORIVA 프로젝트"); setImages({ product: [], competitorThumbnail: [], competitorDetail: [], review: [] }); setReviewText(""); setResult(null); setGeneratedThumbnails({}); setGeneratedDetails({}); setCloudOpen(false); showNotice("새 프로젝트를 시작했습니다.");
+    setProjectId(null); setProjectName("새 MORIVA 프로젝트"); setImages({ product: [], competitorThumbnail: [], competitorDetail: [], review: [] }); setReviewText(""); setResult(null); setGeneratedThumbnails({}); setGeneratedDetails({}); setCloudOpen(false);
+    void clearLocalDraft();
+    showNotice("새 프로젝트를 시작했습니다.");
   };
 
   useEffect(() => {
