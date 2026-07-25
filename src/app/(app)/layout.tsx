@@ -20,9 +20,14 @@ export default async function AppLayout({ children }: { children: React.ReactNod
 
   return (
     <div className="min-h-screen w-full flex bg-[#f4f6f7]">
-      {/* Sidebar */}
-      <aside className="hidden sm:flex w-60 flex-shrink-0 flex-col justify-between bg-[#071a35] text-white sticky top-0 h-screen">
-        <div className="flex flex-col gap-6 pt-6">
+      {/* Sidebar
+          h-screen + overflow-hidden으로 사이드바 자체를 뷰포트 높이에 고정하고,
+          내비게이션 목록만 자체 스크롤(overflow-y-auto)되게 분리했다.
+          예전에는 도구 목록이 늘어나 사이드바 내용이 뷰포트보다 길어지면
+          그 넘친 만큼 문서 전체가 스크롤돼서, 페이지를 스크롤할 때 사이드바와
+          본문이 함께 움직이는 것처럼 보였다(사이드바가 자체 스크롤 영역이 아니었음). */}
+      <aside className="hidden sm:flex w-60 flex-shrink-0 flex-col bg-[#071a35] text-white sticky top-0 h-screen overflow-hidden">
+        <div className="flex flex-col gap-6 pt-6 flex-1 min-h-0 overflow-y-auto">
           <Link href="/dashboard" className="flex items-center gap-2 px-4">
             <span className="flex items-center justify-center rounded-md bg-white p-1">
               <Image src="/moriva-favicon.png" alt="MORIVA" width={22} height={22} />
@@ -32,7 +37,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
           <SidebarNav />
         </div>
 
-        <div className="flex flex-col gap-3 px-4 py-5 border-t border-white/10">
+        <div className="flex flex-col gap-3 px-4 py-5 border-t border-white/10 flex-shrink-0">
           <div className="flex flex-col gap-0.5">
             <span className="text-xs text-white/40">{user.email}</span>
             <span className="text-sm font-medium text-[#c9961a]">
