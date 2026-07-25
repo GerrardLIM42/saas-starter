@@ -68,4 +68,12 @@ export const TOOLS: ToolDef[] = [
     desc: "네이버 데이터랩으로 검색어 트렌드·연관 키워드·쇼핑인사이트(연령/성별/기기)를 조회합니다. (본인 네이버 API 키 필요)",
     icon: "🔍",
   },
+  {
+    slug: "sourcing-price-compare",
+    file: "sourcing-price-compare.html",
+    navLabel: "가격 비교",
+    title: "소싱 가격비교",
+    desc: "상품별로 여러 판매자를 등록하고 옵션(이미지·가격)을 비교해 최저가를 자동으로 찾아줍니다. GitHub 연동으로 여러 기기 간 동기화도 가능합니다.",
+    icon: "💱",
+  },
 ];
