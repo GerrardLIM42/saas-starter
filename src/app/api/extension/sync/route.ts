@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 
 // 크롬 확장 프로그램(MORIVA 쿠팡 리뷰 분석기)에서 리뷰 분석이 끝날 때마다 호출하는
@@ -61,7 +62,7 @@ export async function POST(req: Request) {
       averageRating: parsed.data.averageRating,
       estimatedDailySales: parsed.data.estimatedDailySales ?? null,
       analyzedAt: Number.isNaN(analyzedAt.getTime()) ? new Date() : analyzedAt,
-      data: { payload: parsed.data.payload, analysis: parsed.data.analysis },
+      data: { payload: parsed.data.payload, analysis: parsed.data.analysis } as Prisma.InputJsonValue,
     },
     update: {
       productTitle: parsed.data.productTitle ?? null,
@@ -69,7 +70,7 @@ export async function POST(req: Request) {
       averageRating: parsed.data.averageRating,
       estimatedDailySales: parsed.data.estimatedDailySales ?? null,
       analyzedAt: Number.isNaN(analyzedAt.getTime()) ? new Date() : analyzedAt,
-      data: { payload: parsed.data.payload, analysis: parsed.data.analysis },
+      data: { payload: parsed.data.payload, analysis: parsed.data.analysis } as Prisma.InputJsonValue,
     },
     select: { id: true },
   });
