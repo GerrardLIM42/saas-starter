@@ -9,6 +9,7 @@ import { getOrderedTools, TOOL_ORDER_EVENT } from "./tools/tool-order";
 const NAV_ITEMS = [
   { href: "/dashboard", label: "대시보드", icon: "🏠" },
   { href: "/studio", label: "스튜디오", icon: "🎨" },
+  { href: "/analyses", label: "분석 기록", icon: "📊" },
   { href: "/credits", label: "크레딧", icon: "💳" },
   { href: "/billing", label: "구독", icon: "⭐" },
   { href: "/settings", label: "설정", icon: "⚙️" },
