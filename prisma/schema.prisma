@@ -30,10 +30,11 @@ model User {
   // 확장 프로그램이 이 토큰으로 /api/extension/verify를 호출해 구독/크레딧 상태를 확인한다.
   extensionToken String? @unique
 
-  accounts      Account[]
-  sessions      Session[]
-  subscriptions Subscription[]
-  creditLedger  CreditLedger[]
+  accounts          Account[]
+  sessions          Session[]
+  subscriptions     Subscription[]
+  creditLedger      CreditLedger[]
+  extensionAnalyses ExtensionAnalysis[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -151,4 +152,33 @@ model CreditLedger {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId, createdAt])
+}
+
+// ---------- 확장 프로그램 동기화 (쿠팡 리뷰 분석) ----------
+
+// MORIVA 쿠팡 리뷰 분석기(크롬 확장 프로그램)에서 상품 리뷰를 분석할 때마다
+// /api/extension/sync 로 전송되어 저장된다. 같은 상품(productUrl)을 다시 분석하면
+// 기존 레코드를 덮어쓴다(최신 분석 결과만 유지).
+model ExtensionAnalysis {
+  id     String @id @default(cuid())
+  userId String
+
+  productUrl          String
+  productTitle        String?
+  reviewCount         Int      @default(0)
+  averageRating       Float    @default(0)
+  estimatedDailySales Float?
+  analyzedAt          DateTime
+
+  // 확장 프로그램의 원본 payload(상품 정보)와 분석 결과(analytics.js의 analyze() 출력)를
+  // 그대로 저장한다. 용량 절약을 위해 원본 리뷰 원문 배열은 analysis 쪽 한 곳에만 둔다.
+  data Json
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, productUrl])
+  @@index([userId, analyzedAt])
 }
