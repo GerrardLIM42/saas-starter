@@ -33,6 +33,16 @@ export function ExtensionTokenSection() {
     setTimeout(() => setCopied(false), 1500);
   }
 
+  // moriva-tools(별도 정적 사이트)의 "분석 기록" 페이지를 연결 코드가 이미 채워진
+  // 상태로 새 탭에 연다. 사용자가 코드를 직접 복사/붙여넣기 하지 않아도 되도록,
+  // 코드는 URL 쿼리로 한 번만 전달되고 moriva-tools 쪽에서 즉시 저장한 뒤
+  // 주소창에서 지운다 (index.html의 route() 참고).
+  function openInMorivaTools() {
+    if (!token) return;
+    const url = `https://gerrardlim42.github.io/moriva-tools/?token=${encodeURIComponent(token)}#analysis-history`;
+    window.open(url, "_blank", "noopener");
+  }
+
   return (
     <div className="flex flex-col gap-3">
       <p className="text-sm text-gray-500">
@@ -56,6 +66,13 @@ export function ExtensionTokenSection() {
               {copied ? "복사됨" : "복사"}
             </button>
           </div>
+          <button
+            onClick={openInMorivaTools}
+            disabled={!token}
+            className="self-start rounded-md bg-[#c9961a] px-3 py-2 text-sm font-medium text-white hover:bg-[#b9860f] transition disabled:opacity-50"
+          >
+            모리바 도구모음에서 분석 기록 보기 ↗
+          </button>
           <button
             onClick={regenerate}
             disabled={regenerating}
