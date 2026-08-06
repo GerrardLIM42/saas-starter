@@ -112,6 +112,12 @@ export default function Home() {
             >
               기능 살펴보기
             </Link>
+            <a
+              href="/demo"
+              className="rounded-md border border-white/20 px-6 py-3 text-sm font-semibold text-white hover:bg-white/10 transition"
+            >
+              로그인 없이 데모 체험하기
+            </a>
           </div>
 
           {/* Steps strip */}
